@@ -1,0 +1,5226 @@
+<!DOCTYPE html><html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b0b">
+<meta name="color-scheme" content="dark">
+<title>RemoveBG | Studio</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Marhey:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+:root{
+  --bg:#080b0b;
+  --bg2:#0d1110;
+  --panel:#101514;
+  --panel2:#0c100f;
+  --card:#111716;
+  --line:rgba(194,159,103,.17);
+  --line2:rgba(194,159,103,.28);
+  --gold:#d6b17a;
+  --gold2:#f1dbb5;
+  --text:#f4eee6;
+  --muted:#8f8a82;
+  --muted2:#686760;
+  --green:#9bd09a;
+  --red:#df9189;
+  --shadow:0 24px 60px rgba(0,0,0,.26);
+  --radius:24px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth}
+
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  font-family:"Cairo",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 12% 10%,rgba(187,133,65,.055),transparent 26%),
+    radial-gradient(circle at 90% 12%,rgba(143,174,144,.035),transparent 24%),
+    linear-gradient(180deg,#080a0a 0%,#0a0d0d 55%,#070909 100%);
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(7,10,9,.90),rgba(7,9,9,.97)),
+    url("https://files.catbox.moe/gsgbgd.jpg") center/cover no-repeat;
+  opacity:.42;
+}
+
+button,input{font:inherit}
+
+button{
+  border:0;
+  background:none;
+  color:inherit;
+  cursor:pointer;
+}
+
+button:disabled{cursor:not-allowed}
+
+input{outline:none}
+
+a{color:inherit;text-decoration:none}
+
+.hidden{display:none!important}
+
+::selection{
+  background:rgba(214,177,122,.20);
+  color:#fff;
+}
+
+::-webkit-scrollbar{width:7px}
+::-webkit-scrollbar-track{background:#080a0a}
+::-webkit-scrollbar-thumb{
+  background:rgba(214,177,122,.18);
+  border-radius:99px;
+}
+
+.container{
+  width:min(1240px,calc(100% - 24px));
+  margin:auto;
+}
+
+.glass{
+  background:rgba(14,18,17,.84);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+
+.icon{
+  width:18px;
+  height:18px;
+  flex:none;
+}
+
+#loader{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  padding:18px;
+  background:
+    radial-gradient(circle at center,rgba(204,158,88,.08),transparent 34%),
+    linear-gradient(180deg,#060808,#090c0b);
+}
+
+.loader-grid{
+  position:absolute;
+  inset:0;
+  opacity:.14;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+
+.loader-orb{
+  position:absolute;
+  width:360px;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(202,159,92,.10),transparent 66%);
+}
+
+.loader-card{
+  position:relative;
+  width:min(440px,100%);
+  padding:34px 25px 25px;
+  border-radius:30px;
+  border:1px solid rgba(214,177,122,.18);
+  background:rgba(11,14,13,.92);
+  box-shadow:0 34px 100px rgba(0,0,0,.42);
+  text-align:center;
+  animation:loaderIn .7s var(--ease);
+}
+
+.loader-emblem{
+  width:88px;
+  height:88px;
+  margin:0 auto 17px;
+  display:grid;
+  place-items:center;
+  border-radius:25px;
+  border:1px solid rgba(214,177,122,.24);
+  background:
+    linear-gradient(145deg,rgba(214,177,122,.18),rgba(214,177,122,.03));
+  color:var(--gold2);
+  font-size:30px;
+  box-shadow:
+    0 0 0 7px rgba(214,177,122,.025),
+    0 18px 45px rgba(0,0,0,.32);
+  position:relative;
+}
+
+.loader-emblem:before{
+  content:"";
+  position:absolute;
+  inset:10px;
+  border:1px solid rgba(214,177,122,.13);
+  border-radius:19px;
+}
+
+.loader-brand{
+  font-family:"Marhey",sans-serif;
+  font-size:31px;
+}
+
+.loader-brand span{color:var(--gold)}
+
+.loader-caption{
+  margin-top:3px;
+  color:#6f6d68;
+  font-size:9px;
+  letter-spacing:4px;
+  direction:ltr;
+}
+
+.loader-status{
+  margin-top:22px;
+  color:#b3ada4;
+  font-size:11px;
+}
+
+.loader-progress{
+  margin-top:14px;
+  height:4px;
+  overflow:hidden;
+  border-radius:99px;
+  background:rgba(255,255,255,.05);
+}
+
+.loader-progress span{
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#7e5f33,var(--gold),#f3dfbe);
+  animation:loaderProgress 1.85s var(--ease) forwards;
+}
+
+#loader.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:.55s ease;
+}
+
+.auth{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:18px;
+}
+
+.auth-shell{
+  width:min(1060px,100%);
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+  gap:16px;
+}
+
+.auth-visual,
+.auth-card{
+  position:relative;
+  min-height:620px;
+  border-radius:28px;
+  overflow:hidden;
+}
+
+.auth-visual{
+  padding:38px;
+  display:flex;
+  align-items:flex-end;
+  background:
+    linear-gradient(180deg,rgba(8,11,10,.22),rgba(8,11,10,.95)),
+    url("https://files.catbox.moe/gsgbgd.jpg") center/cover no-repeat;
+  border:1px solid var(--line);
+}
+
+.auth-visual:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(135deg,transparent 25%,rgba(214,177,122,.03),transparent 65%);
+  pointer-events:none;
+}
+
+.auth-visual-content{position:relative;z-index:2}
+
+.kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:31px;
+  padding:0 11px;
+  border:1px solid rgba(214,177,122,.15);
+  border-radius:999px;
+  background:rgba(7,10,9,.54);
+  color:#b39a78;
+  font-size:9px;
+  letter-spacing:1.5px;
+  direction:ltr;
+}
+
+.kicker i{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 10px rgba(214,177,122,.45);
+}
+
+.auth-visual h2{
+  margin-top:18px;
+  font-family:"Marhey",sans-serif;
+  font-size:clamp(32px,4.8vw,54px);
+  line-height:1.5;
+}
+
+.auth-visual h2 span{color:var(--gold)}
+
+.auth-visual p{
+  max-width:580px;
+  margin-top:13px;
+  color:#aaa59d;
+  line-height:2;
+  font-size:11px;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:22px;
+}
+
+.feature{
+  padding:14px;
+  border:1px solid rgba(214,177,122,.13);
+  border-radius:17px;
+  background:rgba(7,10,9,.38);
+}
+
+.feature strong{
+  display:block;
+  font-size:11px;
+}
+
+.feature span{
+  display:block;
+  margin-top:4px;
+  color:#74726d;
+  font-size:8px;
+}
+
+.auth-card{
+  padding:30px 24px 24px;
+  background:
+    linear-gradient(180deg,rgba(17,22,20,.97),rgba(10,13,12,.98));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+
+.auth-card:before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:15%;
+  right:15%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+.logo{
+  width:66px;
+  height:66px;
+  margin:0 auto 15px;
+  display:grid;
+  place-items:center;
+  border-radius:21px;
+  border:1px solid rgba(214,177,122,.22);
+  background:linear-gradient(145deg,rgba(214,177,122,.17),rgba(214,177,122,.025));
+  color:var(--gold2);
+  font-size:25px;
+}
+
+.auth-title{
+  text-align:center;
+  font-family:"Marhey",sans-serif;
+  font-size:27px;
+}
+
+.auth-title span{color:var(--gold)}
+
+.auth-sub{
+  max-width:330px;
+  margin:7px auto 21px;
+  color:#77766f;
+  text-align:center;
+  font-size:9px;
+  line-height:1.9;
+}
+
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px;
+  padding:4px;
+  margin-bottom:19px;
+  border:1px solid rgba(214,177,122,.10);
+  border-radius:15px;
+  background:#0a0e0d;
+}
+
+.tab{
+  min-height:42px;
+  border-radius:11px;
+  color:#70706a;
+  font-size:11px;
+  font-weight:800;
+}
+
+.tab.active{
+  color:#efe2cf;
+  background:linear-gradient(180deg,rgba(179,133,68,.20),rgba(179,133,68,.05));
+  border:1px solid rgba(214,177,122,.13);
+}
+
+.field{
+  margin-bottom:12px;
+}
+
+.field label{
+  display:block;
+  margin-bottom:7px;
+  color:#aaa093;
+  font-size:9px;
+  font-weight:800;
+}
+
+.input-wrap{position:relative}
+
+.input{
+  width:100%;
+  height:49px;
+  padding:0 13px;
+  border:1px solid rgba(214,177,122,.11);
+  border-radius:14px;
+  background:#090d0c;
+  color:#eee8df;
+  transition:.22s ease;
+  font-size:12px;
+}
+
+.input:hover{border-color:rgba(214,177,122,.20)}
+
+.input:focus{
+  border-color:rgba(214,177,122,.45);
+  box-shadow:0 0 0 4px rgba(214,177,122,.045);
+}
+
+.input.error{border-color:rgba(223,145,137,.42)}
+
+.input::placeholder{color:#4f514c}
+
+.password-btn{
+  position:absolute;
+  left:7px;
+  top:50%;
+  transform:translateY(-50%);
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  color:#77756e;
+}
+
+.password-btn:hover{
+  background:rgba(255,255,255,.025);
+  color:#b7a589;
+}
+
+.field-error{
+  display:none;
+  margin-top:5px;
+  color:var(--red);
+  font-size:8px;
+}
+
+.field-error.show{display:block}
+
+.submit{
+  width:100%;
+  min-height:50px;
+  margin-top:5px;
+  border:1px solid rgba(214,177,122,.28);
+  border-radius:14px;
+  color:#f6e8d2;
+  background:linear-gradient(180deg,#76552f,#4f381f);
+  font-size:12px;
+  font-weight:900;
+  transition:.22s ease;
+}
+
+.submit:hover:not(:disabled){
+  transform:translateY(-1px);
+  box-shadow:0 15px 30px rgba(0,0,0,.25);
+}
+
+.submit:disabled{opacity:.55}
+
+.auth-message{
+  display:none;
+  margin-top:11px;
+  padding:11px 12px;
+  border-radius:13px;
+  border:1px solid rgba(214,177,122,.12);
+  background:rgba(214,177,122,.035);
+  color:#aaa298;
+  font-size:9px;
+  line-height:1.8;
+  text-align:center;
+  white-space:pre-line;
+}
+
+.auth-message.show{display:block}
+
+.auth-message.error{
+  border-color:rgba(223,145,137,.20);
+  color:#deb0aa;
+}
+
+.auth-message.success{
+  border-color:rgba(155,208,154,.18);
+  color:#bcd8b9;
+}
+
+.app{
+  min-height:100vh;
+  padding:12px 0 35px;
+}
+
+.header{
+  min-height:74px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:10px 13px 10px 17px;
+  border-radius:21px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.brand-logo{
+  width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  color:var(--gold2);
+  border:1px solid rgba(214,177,122,.18);
+  background:linear-gradient(145deg,rgba(214,177,122,.15),rgba(214,177,122,.025));
+  font-size:18px;
+}
+
+.brand-text strong{
+  display:block;
+  font-size:16px;
+  font-weight:900;
+}
+
+.brand-text span{
+  display:block;
+  margin-top:1px;
+  color:#5f625d;
+  font-size:7px;
+  direction:ltr;
+  letter-spacing:3px;
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.plan-pill{
+  min-height:35px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:0 11px;
+  border:1px solid rgba(214,177,122,.12);
+  border-radius:999px;
+  background:rgba(214,177,122,.035);
+  color:#bda988;
+  font-size:8px;
+  font-weight:800;
+}
+
+.plan-pill.pro{
+  color:#ead8b9;
+  border-color:rgba(214,177,122,.24);
+}
+
+.plan-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#8a8c86;
+}
+
+.plan-pill.pro .plan-dot{
+  background:var(--gold);
+  box-shadow:0 0 10px rgba(214,177,122,.42);
+}
+
+.dev-btn{
+  min-height:35px;
+  padding:0 11px;
+  border-radius:11px;
+  border:1px solid rgba(214,177,122,.16);
+  color:#bda887;
+  background:rgba(214,177,122,.035);
+  font-size:8px;
+  font-weight:900;
+}
+
+.nav{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  padding:4px;
+  margin-top:12px;
+  border-radius:18px;
+  background:#0a0e0d;
+  border:1px solid rgba(214,177,122,.10);
+}
+
+.nav-btn{
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  border-radius:13px;
+  color:#646660;
+  font-size:10px;
+  font-weight:800;
+  border:1px solid transparent;
+}
+
+.nav-btn.active{
+  color:#eee3d3;
+  border-color:rgba(214,177,122,.12);
+  background:rgba(214,177,122,.07);
+}
+
+.view{
+  margin-top:13px;
+  animation:viewIn .28s var(--ease);
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:48px 20px 40px;
+  border-radius:25px;
+  border:1px solid var(--line);
+  background:
+    linear-gradient(180deg,rgba(12,16,15,.62),rgba(9,12,11,.96)),
+    url("https://files.catbox.moe/gsgbgd.jpg") center/cover no-repeat;
+}
+
+.hero-top{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  color:#8c836f;
+  direction:ltr;
+  font-size:8px;
+  letter-spacing:2.5px;
+}
+
+.hero-top:before,
+.hero-top:after{
+  content:"";
+  width:52px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+
+.hero-top:after{
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+
+.hero h1{
+  margin-top:15px;
+  text-align:center;
+  font-family:"Marhey",sans-serif;
+  font-size:clamp(30px,6vw,54px);
+}
+
+.hero h1 span{
+  color:var(--gold);
+  text-shadow:0 0 25px rgba(214,177,122,.10);
+}
+
+.hero p{
+  max-width:620px;
+  margin:10px auto 0;
+  color:#8d8b84;
+  text-align:center;
+  line-height:2;
+  font-size:10px;
+}
+
+.workspace{
+  margin-top:12px;
+  padding:11px;
+  border-radius:22px;
+  border:1px solid rgba(214,177,122,.10);
+  background:#0c110f;
+}
+
+.upload{
+  min-height:365px;
+  display:grid;
+  place-items:center;
+  padding:28px;
+  text-align:center;
+  cursor:pointer;
+  border-radius:19px;
+  border:1px dashed rgba(214,177,122,.20);
+  background:
+    linear-gradient(180deg,rgba(19,24,22,.72),rgba(9,13,12,.94)),
+    url("https://files.catbox.moe/gsgbgd.jpg") center/cover no-repeat;
+  transition:.25s ease;
+}
+
+.upload:hover,
+.upload.drag{
+  border-color:rgba(214,177,122,.46);
+  transform:translateY(-1px);
+}
+
+.upload-icon{
+  width:88px;
+  height:88px;
+  margin:0 auto 17px;
+  display:grid;
+  place-items:center;
+  border-radius:27px;
+  border:1px solid rgba(214,177,122,.18);
+  background:linear-gradient(145deg,rgba(214,177,122,.17),rgba(214,177,122,.035));
+  color:var(--gold2);
+  font-size:27px;
+}
+
+.upload h3{
+  font-size:20px;
+  font-weight:900;
+}
+
+.upload p{
+  margin-top:6px;
+  color:#696a65;
+  font-size:9px;
+}
+
+.primary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:180px;
+  min-height:47px;
+  margin-top:17px;
+  padding:0 20px;
+  border-radius:13px;
+  border:1px solid rgba(214,177,122,.23);
+  color:#f1e3cf;
+  background:linear-gradient(180deg,#76552f,#50391f);
+  font-size:11px;
+  font-weight:900;
+}
+
+.preview-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.image-card{
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid rgba(214,177,122,.09);
+  background:#0a0e0d;
+}
+
+.image-head{
+  min-height:43px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:0 12px;
+  border-bottom:1px solid rgba(214,177,122,.075);
+}
+
+.image-head strong{font-size:10px}
+.image-head span{
+  color:#585a55;
+  direction:ltr;
+  font-size:7px;
+  letter-spacing:1.2px;
+}
+
+.image-box{
+  min-height:330px;
+  display:grid;
+  place-items:center;
+  padding:12px;
+  background:#0c1110;
+}
+
+.image-box img{
+  display:block;
+  max-width:100%;
+  max-height:450px;
+  object-fit:contain;
+  border-radius:9px;
+  box-shadow:0 20px 40px rgba(0,0,0,.28);
+}
+
+.checker{
+  background-color:#161b19;
+  background-image:
+    linear-gradient(45deg,#202622 25%,transparent 25%),
+    linear-gradient(-45deg,#202622 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#202622 75%),
+    linear-gradient(-45deg,transparent 75%,#202622 75%);
+  background-size:26px 26px;
+  background-position:0 0,0 13px,13px -13px,-13px 0;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:7px;
+  margin-top:10px;
+}
+
+.btn{
+  min-height:45px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:0 16px;
+  border-radius:12px;
+  border:1px solid rgba(214,177,122,.12);
+  background:rgba(214,177,122,.035);
+  color:#ddd1bf;
+  font-size:10px;
+  font-weight:900;
+}
+
+.btn.main{
+  background:linear-gradient(180deg,#74532e,#4e371f);
+  border-color:rgba(214,177,122,.22);
+}
+
+.btn.green{
+  color:#bedbbc;
+  border-color:rgba(155,208,154,.15);
+  background:rgba(155,208,154,.045);
+}
+
+.btn.red{
+  color:#ddb0aa;
+  border-color:rgba(223,145,137,.15);
+  background:rgba(223,145,137,.045);
+}
+
+.btn:disabled{opacity:.42}
+
+.process{
+  margin-top:10px;
+  padding:20px;
+  border-radius:17px;
+  border:1px solid rgba(214,177,122,.09);
+  background:rgba(214,177,122,.025);
+  text-align:center;
+}
+
+.loader-mini{
+  width:48px;
+  height:48px;
+  margin:0 auto 13px;
+  border-radius:50%;
+  border:2px solid rgba(214,177,122,.12);
+  border-top-color:var(--gold);
+  border-right-color:rgba(214,177,122,.45);
+  animation:spin .8s linear infinite;
+}
+
+.process strong{
+  display:block;
+  font-size:11px;
+}
+
+.process span{
+  display:block;
+  margin-top:4px;
+  color:#676862;
+  font-size:8px;
+}
+
+.history-head,
+.profile-card,
+.profile-panel,
+.admin-head,
+.admin-section,
+.admin-overview .metric{
+  border:1px solid var(--line);
+  background:rgba(12,16,15,.88);
+  box-shadow:var(--shadow);
+}
+
+.history-head{
+  min-height:82px;
+  padding:15px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  border-radius:22px;
+}
+
+.title{
+  font-family:"Marhey",sans-serif;
+  font-size:19px;
+}
+
+.title span{color:var(--gold)}
+
+.stats{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.chip{
+  min-height:31px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:0 10px;
+  border:1px solid rgba(214,177,122,.10);
+  border-radius:999px;
+  background:rgba(214,177,122,.028);
+  color:#77766f;
+  font-size:8px;
+}
+
+.chip strong{color:#d5bb91}
+
+.toolbar{
+  margin-top:9px;
+  min-height:45px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:0 11px;
+  border-radius:15px;
+  border:1px solid rgba(214,177,122,.08);
+  background:#0a0e0d;
+}
+
+.toolbar span{
+  color:#5e605a;
+  font-size:8px;
+}
+
+.toolbar button{
+  min-height:33px;
+  padding:0 10px;
+  border-radius:10px;
+  border:1px solid rgba(214,177,122,.10);
+  color:#a89e8e;
+  background:rgba(214,177,122,.03);
+  font-size:8px;
+  font-weight:900;
+}
+
+.history-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+
+.history-card{
+  overflow:hidden;
+  border-radius:17px;
+  border:1px solid rgba(214,177,122,.08);
+  background:#0b0f0e;
+}
+
+.history-date{
+  padding:8px 10px;
+  border-bottom:1px solid rgba(214,177,122,.06);
+  color:#5e605b;
+  text-align:center;
+  font-size:7px;
+}
+
+.history-thumb{
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  background-color:#151a18;
+  background-image:
+    linear-gradient(45deg,#202622 25%,transparent 25%),
+    linear-gradient(-45deg,#202622 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#202622 75%),
+    linear-gradient(-45deg,transparent 75%,#202622 75%);
+  background-size:20px 20px;
+  background-position:0 0,0 10px,10px -10px,-10px 0;
+}
+
+.history-thumb img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:contain;
+}
+
+.history-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  padding:8px;
+  border-top:1px solid rgba(214,177,122,.06);
+}
+
+.history-actions .btn{
+  min-height:36px;
+  padding:0 8px;
+  font-size:8px;
+}
+
+.empty{
+  padding:62px 20px;
+  margin-top:10px;
+  border-radius:21px;
+  border:1px dashed rgba(214,177,122,.12);
+  background:#0b0f0e;
+  text-align:center;
+}
+
+.empty-icon{
+  width:58px;
+  height:58px;
+  margin:0 auto 13px;
+  display:grid;
+  place-items:center;
+  border-radius:19px;
+  border:1px solid rgba(214,177,122,.10);
+  color:#77746d;
+  background:rgba(214,177,122,.03);
+  font-size:23px;
+}
+
+.empty h3{font-size:13px}
+.empty p{
+  margin-top:5px;
+  color:#5e605b;
+  font-size:8px;
+}
+
+.profile-grid{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:11px;
+}
+
+.profile-card{
+  padding:26px 20px;
+  border-radius:23px;
+  text-align:center;
+}
+
+.avatar{
+  width:104px;
+  height:104px;
+  margin:0 auto 16px;
+  display:grid;
+  place-items:center;
+  border-radius:30px;
+  border:1px solid rgba(214,177,122,.22);
+  background:linear-gradient(145deg,#5f4629,#27211a);
+  color:#eee0cb;
+  font-family:"Marhey",sans-serif;
+  font-size:32px;
+}
+
+.profile-name{
+  font-family:"Marhey",sans-serif;
+  font-size:22px;
+  word-break:break-word;
+}
+
+.profile-email{
+  margin-top:3px;
+  color:#6b6c66;
+  font-size:9px;
+  word-break:break-all;
+}
+
+.role{
+  display:inline-flex;
+  margin-top:9px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(214,177,122,.10);
+  background:rgba(214,177,122,.03);
+  color:#b9a484;
+  font-size:8px;
+  font-weight:900;
+}
+
+.role.dev{
+  border-color:rgba(214,177,122,.24);
+  color:#e8cfaa;
+}
+
+.joined{
+  display:block;
+  margin-top:8px;
+  color:#575a54;
+  font-size:7px;
+}
+
+.profile-panel{
+  padding:16px;
+  border-radius:23px;
+}
+
+.profile-title{
+  font-family:"Marhey",sans-serif;
+  font-size:15px;
+}
+
+.profile-title span{color:var(--gold)}
+
+.profile-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-top:11px;
+}
+
+.pstat{
+  padding:16px 9px;
+  border-radius:16px;
+  border:1px solid rgba(214,177,122,.08);
+  background:#0a0e0d;
+}
+
+.pstat strong{
+  display:block;
+  color:#dbba88;
+  font-family:"Marhey",sans-serif;
+  font-size:22px;
+}
+
+.pstat span{
+  display:block;
+  margin-top:4px;
+  color:#5f615b;
+  font-size:7px;
+}
+
+.profile-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-top:8px;
+}
+
+.info{
+  padding:13px;
+  border-radius:14px;
+  border:1px solid rgba(214,177,122,.07);
+  background:#0a0e0d;
+}
+
+.info span{
+  display:block;
+  color:#565852;
+  font-size:7px;
+}
+
+.info strong{
+  display:block;
+  margin-top:5px;
+  color:#b4ab9f;
+  font-size:9px;
+  word-break:break-word;
+}
+
+.profile-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:9px;
+}
+
+.profile-actions .btn{
+  flex:1;
+  min-width:140px;
+}
+
+.admin-head{
+  padding:16px;
+  border-radius:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.admin-title{
+  font-family:"Marhey",sans-serif;
+  font-size:21px;
+}
+
+.admin-title span{color:var(--gold)}
+
+.admin-sub{
+  margin-top:4px;
+  color:#666760;
+  font-size:8px;
+}
+
+.admin-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:29px;
+  padding:0 10px;
+  border-radius:999px;
+  border:1px solid rgba(214,177,122,.15);
+  color:#cbb48e;
+  background:rgba(214,177,122,.035);
+  font-size:8px;
+  font-weight:900;
+}
+
+.admin-actions{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.admin-overview{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:9px;
+}
+
+.metric{
+  padding:15px;
+  border-radius:17px;
+}
+
+.metric strong{
+  display:block;
+  color:#dbbc8b;
+  font-family:"Marhey",sans-serif;
+  font-size:23px;
+}
+
+.metric span{
+  display:block;
+  margin-top:4px;
+  color:#5d5f59;
+  font-size:7px;
+}
+
+.admin-tools{
+  display:flex;
+  gap:7px;
+  margin-top:9px;
+}
+
+.admin-search{
+  flex:1;
+  height:43px;
+  padding:0 12px;
+  color:#e8dfd1;
+  border:1px solid rgba(214,177,122,.08);
+  border-radius:13px;
+  background:#090d0c;
+  font-size:9px;
+}
+
+.admin-sections{
+  display:grid;
+  grid-template-columns:1fr 1.15fr;
+  gap:9px;
+  margin-top:9px;
+}
+
+.admin-section{
+  overflow:hidden;
+  border-radius:19px;
+}
+
+.section-head{
+  min-height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 13px;
+  border-bottom:1px solid rgba(214,177,122,.07);
+}
+
+.section-head strong{font-size:10px}
+.section-head span{
+  color:#5e6059;
+  font-size:7px;
+}
+
+.users{
+  max-height:600px;
+  overflow:auto;
+}
+
+.user-row{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:10px;
+  border-bottom:1px solid rgba(214,177,122,.05);
+}
+
+.user-avatar{
+  width:38px;
+  height:38px;
+  flex:none;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  border:1px solid rgba(214,177,122,.12);
+  background:linear-gradient(145deg,#5b4225,#211c17);
+  color:#ead7ba;
+  font-family:"Marhey",sans-serif;
+  font-size:12px;
+}
+
+.user-main{
+  min-width:0;
+  flex:1;
+}
+
+.user-main strong{
+  display:block;
+  font-size:9px;
+  word-break:break-word;
+}
+
+.user-main span{
+  display:block;
+  margin-top:3px;
+  color:#5b5d58;
+  font-size:7px;
+  word-break:break-all;
+}
+
+.user-meta{
+  text-align:left;
+}
+
+.user-meta strong{
+  display:block;
+  color:#cdb489;
+  font-size:8px;
+}
+
+.user-meta small{
+  display:block;
+  margin-top:2px;
+  color:#555751;
+  font-size:6px;
+}
+
+.manage{
+  min-height:31px;
+  padding:0 8px;
+  border-radius:9px;
+  border:1px solid rgba(214,177,122,.10);
+  color:#baa785;
+  background:rgba(214,177,122,.03);
+  font-size:7px;
+  font-weight:900;
+}
+
+.user-state{
+  display:inline-flex;
+  margin-top:4px;
+  padding:3px 6px;
+  border-radius:999px;
+  font-size:6px;
+  border:1px solid rgba(214,177,122,.08);
+  color:#77756d;
+}
+
+.user-state.pro{
+  color:#e0c99f;
+  border-color:rgba(214,177,122,.18);
+}
+
+.user-state.banned{
+  color:#e0aaa4;
+  border-color:rgba(223,145,137,.15);
+}
+
+.admin-ops{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  padding:9px;
+}
+
+.admin-op{
+  overflow:hidden;
+  border-radius:15px;
+  border:1px solid rgba(214,177,122,.07);
+  background:#0a0e0d;
+}
+
+.admin-op-thumb{
+  aspect-ratio:1;
+  background-color:#151a18;
+  background-image:
+    linear-gradient(45deg,#202622 25%,transparent 25%),
+    linear-gradient(-45deg,#202622 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#202622 75%),
+    linear-gradient(-45deg,transparent 75%,#202622 75%);
+  background-size:16px 16px;
+  background-position:0 0,0 8px,8px -8px,-8px 0;
+}
+
+.admin-op-thumb img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:contain;
+}
+
+.admin-op-body{
+  padding:8px;
+}
+
+.admin-op-body strong{
+  display:block;
+  font-size:8px;
+  word-break:break-word;
+}
+
+.admin-op-body span{
+  display:block;
+  margin-top:3px;
+  color:#595b55;
+  font-size:6px;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:99998;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  background:rgba(3,5,5,.72);
+}
+
+.modal.show{display:flex}
+
+.modal-card{
+  width:min(760px,100%);
+  max-height:min(92vh,900px);
+  overflow:auto;
+  border-radius:24px;
+  border:1px solid rgba(214,177,122,.16);
+  background:#0d1210;
+  box-shadow:0 30px 100px rgba(0,0,0,.45);
+}
+
+.modal-head{
+  position:sticky;
+  top:0;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:15px 16px;
+  border-bottom:1px solid rgba(214,177,122,.07);
+  background:#0d1210;
+}
+
+.modal-head strong{
+  font-family:"Marhey",sans-serif;
+  font-size:15px;
+}
+
+.modal-close{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  color:#77766e;
+  background:rgba(255,255,255,.025);
+}
+
+.modal-content{padding:14px}
+
+.user-summary{
+  display:grid;
+  grid-template-columns:90px 1fr;
+  gap:13px;
+  align-items:center;
+  padding:13px;
+  border-radius:18px;
+  border:1px solid rgba(214,177,122,.07);
+  background:#0a0e0d;
+}
+
+.summary-avatar{
+  width:90px;
+  height:90px;
+  display:grid;
+  place-items:center;
+  border-radius:25px;
+  border:1px solid rgba(214,177,122,.13);
+  background:linear-gradient(145deg,#5a4225,#211b16);
+  color:#ead7bb;
+  font-family:"Marhey",sans-serif;
+  font-size:27px;
+}
+
+.summary-name{
+  font-family:"Marhey",sans-serif;
+  font-size:17px;
+}
+
+.summary-mail{
+  margin-top:2px;
+  color:#666760;
+  font-size:8px;
+  word-break:break-all;
+}
+
+.summary-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:8px;
+}
+
+.summary-pill{
+  padding:6px 8px;
+  border-radius:999px;
+  border:1px solid rgba(214,177,122,.07);
+  color:#8b887f;
+  font-size:7px;
+  background:rgba(214,177,122,.025);
+}
+
+.manage-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+
+.manage-box{
+  padding:12px;
+  border-radius:16px;
+  border:1px solid rgba(214,177,122,.07);
+  background:#0a0e0d;
+}
+
+.manage-box label{
+  display:block;
+  margin-bottom:7px;
+  color:#77766e;
+  font-size:8px;
+  font-weight:900;
+}
+
+.plan-select,
+.limit-input{
+  width:100%;
+  height:42px;
+  padding:0 10px;
+  border-radius:11px;
+  border:1px solid rgba(214,177,122,.08);
+  background:#090d0c;
+  color:#e9dfcf;
+  font-size:9px;
+}
+
+.ban-row{
+  margin-top:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-height:42px;
+  padding:0 10px;
+  border-radius:11px;
+  border:1px solid rgba(214,177,122,.07);
+  background:#090d0c;
+}
+
+.ban-row span{font-size:8px;color:#77766f}
+
+.switch{
+  position:relative;
+  width:42px;
+  height:22px;
+  border-radius:999px;
+  background:#1d2421;
+}
+
+.switch:after{
+  content:"";
+  position:absolute;
+  top:3px;
+  right:3px;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#73756e;
+  transition:.2s ease;
+}
+
+.switch.active{
+  background:rgba(223,145,137,.22);
+}
+
+.switch.active:after{
+  right:23px;
+  background:var(--red);
+}
+
+.modal-section-title{
+  margin-top:13px;
+  font-family:"Marhey",sans-serif;
+  font-size:13px;
+}
+
+.modal-section-title span{color:var(--gold)}
+
+.modal-ops{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-top:9px;
+}
+
+.modal-actions{
+  display:flex;
+  gap:7px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+
+.toast{
+  position:fixed;
+  left:16px;
+  bottom:16px;
+  z-index:999999;
+  width:min(400px,calc(100vw - 32px));
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(214,177,122,.16);
+  background:#101614;
+  color:#c9c1b6;
+  box-shadow:0 20px 50px rgba(0,0,0,.36);
+  font-size:9px;
+  line-height:1.8;
+  opacity:0;
+  transform:translateY(12px);
+  pointer-events:none;
+  transition:.25s ease;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.toast.success{
+  color:#bdd7b8;
+  border-color:rgba(155,208,154,.18);
+}
+
+.toast.error{
+  color:#deb0aa;
+  border-color:rgba(223,145,137,.18);
+}
+
+.footer{
+  padding:17px 8px 3px;
+  text-align:center;
+  color:#4e514d;
+  border-top:1px solid rgba(214,177,122,.06);
+  font-size:7px;
+}
+
+.footer a{color:#9d8767}
+
+@keyframes loaderIn{
+  from{opacity:0;transform:translateY(18px) scale(.98)}
+  to{opacity:1;transform:none}
+}
+
+@keyframes loaderProgress{
+  from{width:0}
+  to{width:100%}
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes viewIn{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1;transform:none}
+}
+
+@media(max-width:960px){
+  .auth-shell,
+  .profile-grid,
+  .admin-sections{
+    grid-template-columns:1fr;
+  }
+
+  .auth-visual{
+    min-height:360px;
+  }
+}
+
+@media(max-width:720px){
+  .preview-grid{
+    grid-template-columns:1fr;
+  }
+
+  .admin-overview{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .nav-btn span{
+    display:none;
+  }
+
+  .nav{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
+
+@media(max-width:560px){
+  .container{
+    width:min(100% - 12px,1240px);
+  }
+
+  .auth{
+    padding:10px;
+  }
+
+  .auth-visual{
+    display:none;
+  }
+
+  .auth-card{
+    min-height:auto;
+    border-radius:23px;
+    padding:25px 16px 20px;
+  }
+
+  .header{
+    min-height:68px;
+    padding:9px 10px;
+  }
+
+  .brand-text strong{font-size:14px}
+
+  .brand-logo{
+    width:42px;
+    height:42px;
+  }
+
+  .plan-pill{
+    padding:0 9px;
+    font-size:7px;
+  }
+
+  .dev-btn{
+    padding:0 9px;
+    font-size:7px;
+  }
+
+  .hero{
+    padding:42px 14px 30px;
+  }
+
+  .workspace{
+    padding:8px;
+  }
+
+  .upload{
+    min-height:286px;
+    padding:18px;
+  }
+
+  .upload-icon{
+    width:76px;
+    height:76px;
+  }
+
+  .actions{
+    grid-template-columns:1fr;
+  }
+
+  .profile-stats{
+    grid-template-columns:1fr;
+  }
+
+  .profile-info,
+  .manage-grid{
+    grid-template-columns:1fr;
+  }
+
+  .admin-tools{
+    flex-direction:column;
+  }
+
+  .modal-ops{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .user-summary{
+    grid-template-columns:70px 1fr;
+  }
+
+  .summary-avatar{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition:none!important;
+    scroll-behavior:auto!important;
+  }
+}
+</style></head><body><div id="loader">
+  <div class="loader-grid"></div>
+  <div class="loader-orb"></div>  <div class="loader-card">
+    <div class="loader-emblem">✦</div>
+    <div class="loader-brand">Remove<span>BG</span></div>
+    <div class="loader-caption">STUDIO SYSTEM</div>
+    <div id="loaderStatus" class="loader-status">جاري تجهيز النظام...</div>
+    <div class="loader-progress"><span></span></div>
+  </div>
+</div><section id="authScreen" class="auth hidden">
+  <div class="auth-shell"><div class="auth-visual">
+  <div class="auth-visual-content">
+    <div class="kicker">
+      <i></i>
+      REMOVE BACKGROUND STUDIO
+    </div>
+
+    <h2>
+      مساحتك الخاصة مع
+      <span>RemoveBG</span>
+    </h2>
+
+    <p>
+      استوديو متكامل لإزالة الخلفيات وإدارة عملياتك وحسابك،
+      بواجهة حديثة وسريعة ومصممة لتعمل بسلاسة على الهاتف والكمبيوتر.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature">
+        <strong>Studio</strong>
+        <span>مساحة معالجة مخصصة</span>
+      </div>
+      <div class="feature">
+        <strong>History</strong>
+        <span>الوصول إلى عملياتك</span>
+      </div>
+      <div class="feature">
+        <strong>Pro</strong>
+        <span>مزايا وحدود موسعة</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-card">
+  <div class="logo">✦</div>
+
+  <h1 class="auth-title">
+    Remove<span>BG</span>
+  </h1>
+
+  <p class="auth-sub">
+    سجّل الدخول إلى الاستوديو أو أنشئ حسابك الجديد.
+  </p>
+
+  <div class="tabs">
+    <button id="loginTab" class="tab active" type="button">
+      تسجيل الدخول
+    </button>
+    <button id="registerTab" class="tab" type="button">
+      إنشاء حساب
+    </button>
+  </div>
+
+  <form id="authForm" autocomplete="off">
+
+    <div id="usernameField" class="field hidden">
+      <label for="username">اسم المستخدم</label>
+      <div class="input-wrap">
+        <input
+          id="username"
+          class="input"
+          type="text"
+          maxlength="20"
+          placeholder="username_123"
+          autocomplete="username"
+        >
+      </div>
+      <span id="usernameError" class="field-error"></span>
+    </div>
+
+    <div class="field">
+      <label for="email">البريد الإلكتروني</label>
+      <div class="input-wrap">
+        <input
+          id="email"
+          class="input"
+          type="email"
+          placeholder="example@email.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+      <span id="emailError" class="field-error"></span>
+    </div>
+
+    <div class="field">
+      <label for="password">كلمة المرور</label>
+      <div class="input-wrap">
+        <input
+          id="password"
+          class="input"
+          type="password"
+          minlength="6"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          required
+        >
+        <button id="passwordToggle" class="password-btn" type="button">◉</button>
+      </div>
+      <span id="passwordError" class="field-error"></span>
+    </div>
+
+    <div id="confirmField" class="field hidden">
+      <label for="confirm">تأكيد كلمة المرور</label>
+      <div class="input-wrap">
+        <input
+          id="confirm"
+          class="input"
+          type="password"
+          minlength="6"
+          placeholder="••••••••"
+          autocomplete="new-password"
+        >
+        <button id="confirmToggle" class="password-btn" type="button">◉</button>
+      </div>
+      <span id="confirmError" class="field-error"></span>
+    </div>
+
+    <button id="authSubmit" class="submit" type="submit">
+      تسجيل الدخول
+    </button>
+  </form>
+
+  <div id="authMessage" class="auth-message"></div>
+</div>
+
+  </div>
+</section><main id="appScreen" class="app hidden">
+  <div class="container"><header class="header glass">
+
+  <div class="brand">
+    <div class="brand-logo">✦</div>
+    <div class="brand-text">
+      <strong>RemoveBG</strong>
+      <span>STUDIO</span>
+    </div>
+  </div>
+
+  <div class="header-actions">
+    <button id="adminMiniBtn" class="dev-btn hidden" type="button">
+      لوحة المطوّر
+    </button>
+
+    <div id="planPill" class="plan-pill">
+      <span class="plan-dot"></span>
+      <span id="planText">Free</span>
+    </div>
+  </div>
+
+</header>
+
+<nav class="nav">
+
+  <button class="nav-btn active" data-view="studio" type="button">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+      <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+      <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+      <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+    <span>الاستوديو</span>
+  </button>
+
+  <button class="nav-btn" data-view="history" type="button">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M3 12a9 9 0 1 0 3-6.7"/>
+      <path d="M3 4v5h5"/>
+      <path d="M12 7v5l4 2"/>
+    </svg>
+    <span>السجل</span>
+  </button>
+
+  <button class="nav-btn" data-view="profile" type="button">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="7" r="4"/>
+      <path d="M4 21a8 8 0 0 1 16 0"/>
+    </svg>
+    <span>حسابي</span>
+  </button>
+
+  <button id="adminNavTab" class="nav-btn hidden" data-view="admin" type="button">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M12 3l7 4v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V7l7-4z"/>
+      <path d="M9 12l2 2 4-4"/>
+    </svg>
+    <span>المطوّر</span>
+  </button>
+
+</nav>
+
+<section id="studioView" class="view">
+
+  <div class="hero">
+    <div class="hero-top">REMOVE • BACKGROUND</div>
+
+    <h1>
+      إزالة
+      <span>الخلفية</span>
+    </h1>
+
+    <p>
+      ارفع صورتك واحصل على نتيجة بخلفية شفافة داخل بيئة معالجة
+      مرتبة وسريعة وخفيفة.
+    </p>
+  </div>
+
+  <div class="workspace">
+
+    <div id="uploadPanel" class="upload">
+      <div>
+        <div class="upload-icon">↑</div>
+        <h3>اختر صورة</h3>
+        <p>PNG · JPG · WEBP — حتى 20 ميجا</p>
+
+        <button id="chooseBtn" class="primary" type="button">
+          اختيار صورة
+        </button>
+      </div>
+    </div>
+
+    <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp">
+
+    <div id="previewArea" class="hidden">
+
+      <div class="preview-grid">
+
+        <div class="image-card">
+          <div class="image-head">
+            <strong>الصورة الأصلية</strong>
+            <span>ORIGINAL</span>
+          </div>
+          <div class="image-box">
+            <img id="originalPreview" alt="">
+          </div>
+        </div>
+
+        <div class="image-card">
+          <div class="image-head">
+            <strong>النتيجة</strong>
+            <span>RESULT</span>
+          </div>
+          <div class="image-box checker">
+            <img id="resultPreview" class="hidden" alt="">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="actions">
+
+        <button id="removeBtn" class="btn main" type="button">
+          ✂️ إزالة الخلفية
+        </button>
+
+        <button id="changeBtn" class="btn" type="button">
+          تغيير
+        </button>
+
+        <button id="downloadBtn" class="btn green hidden" type="button">
+          ⬇ تحميل
+        </button>
+
+      </div>
+
+      <div id="loadingPanel" class="process hidden">
+        <div class="loader-mini"></div>
+        <strong>جاري إزالة الخلفية...</strong>
+        <span>يتم تجهيز الصورة الآن</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section id="historyView" class="view hidden">
+
+  <div class="history-head">
+    <div class="title">
+      سجل
+      <span>العمليات</span>
+    </div>
+
+    <div class="stats">
+      <div class="chip">
+        الكل
+        <strong id="statTotal">0</strong>
+      </div>
+      <div class="chip">
+        اليوم
+        <strong id="statToday">0</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <span>عمليات حسابك المحفوظة</span>
+    <button id="historyRefresh" type="button">تحديث</button>
+  </div>
+
+  <div id="historyContent"></div>
+
+</section>
+
+<section id="profileView" class="view hidden">
+
+  <div class="profile-grid">
+
+    <div class="profile-card">
+      <div id="avatarEl" class="avatar">?</div>
+
+      <div id="profileUsername" class="profile-name">—</div>
+      <div id="profileEmail" class="profile-email">—</div>
+
+      <div id="profileRole" class="role">● مستخدم</div>
+
+      <span id="profileJoined" class="joined">—</span>
+    </div>
+
+    <div class="profile-panel">
+
+      <div class="profile-title">
+        إحصائيات
+        <span>الحساب</span>
+      </div>
+
+      <div class="profile-stats">
+
+        <div class="pstat">
+          <strong id="statTotalOps">0</strong>
+          <span>إجمالي العمليات</span>
+        </div>
+
+        <div class="pstat">
+          <strong id="statTodayOps">0</strong>
+          <span>عمليات اليوم</span>
+        </div>
+
+        <div class="pstat">
+          <strong id="statRemaining">5</strong>
+          <span>المتبقي اليوم</span>
+        </div>
+
+      </div>
+
+      <div class="profile-info">
+
+        <div class="info">
+          <span>الخطة</span>
+          <strong id="profilePlan">Free</strong>
+        </div>
+
+        <div class="info">
+          <span>الحالة</span>
+          <strong id="profileStatus">الحساب مفعل</strong>
+        </div>
+
+      </div>
+
+      <div class="profile-actions">
+        <button id="profileRefresh" class="btn" type="button">
+          🔄 تحديث البيانات
+        </button>
+
+        <button id="logoutBtn" class="btn red" type="button">
+          🚪 تسجيل الخروج
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section id="adminView" class="view hidden">
+
+  <div class="admin-head">
+
+    <div>
+      <div class="admin-title">
+        مركز
+        <span>المطوّر</span>
+      </div>
+
+      <div class="admin-sub">
+        إدارة الحسابات والخطط والعمليات
+      </div>
+
+      <div class="admin-badge">
+        ✦ Developer Access
+      </div>
+    </div>
+
+    <div class="admin-actions">
+      <button id="adminRefresh" class="btn" type="button">
+        تحديث البيانات
+      </button>
+
+      <button id="adminBack" class="btn" type="button">
+        الاستوديو
+      </button>
+    </div>
+
+  </div>
+
+  <div class="admin-overview">
+
+    <div class="metric">
+      <strong id="adminUserCount">0</strong>
+      <span>الحسابات</span>
+    </div>
+
+    <div class="metric">
+      <strong id="adminOpsCount">0</strong>
+      <span>العمليات</span>
+    </div>
+
+    <div class="metric">
+      <strong id="adminTodayOps">0</strong>
+      <span>عمليات اليوم</span>
+    </div>
+
+    <div class="metric">
+      <strong id="adminActiveUsers">0</strong>
+      <span>نشاط اليوم</span>
+    </div>
+
+  </div>
+
+  <div class="admin-tools">
+    <input
+      id="adminSearch"
+      class="admin-search"
+      type="search"
+      autocomplete="off"
+      placeholder="ابحث باسم المستخدم أو البريد..."
+    >
+  </div>
+
+  <div class="admin-sections">
+
+    <div class="admin-section">
+      <div class="section-head">
+        <strong>الحسابات</strong>
+        <span id="adminUsersLabel">0 حساب</span>
+      </div>
+
+      <div id="adminUsersList" class="users"></div>
+    </div>
+
+    <div class="admin-section">
+      <div class="section-head">
+        <strong>آخر الصور</strong>
+        <span>جميع المستخدمين</span>
+      </div>
+
+      <div id="adminOpsList" class="admin-ops"></div>
+    </div>
+
+  </div>
+
+</section>
+
+<footer class="footer">
+  © RemoveBG Studio
+  <span> · المطوّر </span>
+  <a href="https://wa.me/201032548312" target="_blank" rel="noopener noreferrer">حيدر</a>
+</footer>
+
+  </div>
+</main><div id="adminModal" class="modal">
+  <div class="modal-card"><div class="modal-head">
+  <strong>إدارة الحساب</strong>
+  <button id="adminModalClose" class="modal-close" type="button">×</button>
+</div>
+
+<div id="adminModalContent" class="modal-content"></div>
+
+  </div>
+</div><div id="toast" class="toast"></div><script>
+const SUPABASE_URL = 'https://skhvturpodaimjjpjmtx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_3Xuz2rzkutg9ivHlfmLTYA_uX5iI-tJ';
+const PIXELCUT_API = 'https://api2.pixelcut.app/image/matte/v1';
+
+const SESSION_KEY = 'removebg_session_v4';
+const BUCKET = 'user-images';
+const DEFAULT_DAILY_LIMIT = 5;
+const SIGNED_URL_SECONDS = 900;
+
+let authMode = 'login';
+let currentSession = null;
+let currentProfile = null;
+let selectedFile = null;
+let resultUrl = null;
+
+let operationsCache = [];
+let adminUsersCache = [];
+let adminOperationsCache = [];
+
+const $ = id => document.getElementById(id);
+
+const loader = $('loader');
+const loaderStatus = $('loaderStatus');
+
+const authScreen = $('authScreen');
+const appScreen = $('appScreen');
+
+const authForm = $('authForm');
+const loginTab = $('loginTab');
+const registerTab = $('registerTab');
+
+const usernameField = $('usernameField');
+const confirmField = $('confirmField');
+
+const usernameInput = $('username');
+const emailInput = $('email');
+const passwordInput = $('password');
+const confirmInput = $('confirm');
+
+const usernameError = $('usernameError');
+const emailError = $('emailError');
+const passwordError = $('passwordError');
+const confirmError = $('confirmError');
+
+const passwordToggle = $('passwordToggle');
+const confirmToggle = $('confirmToggle');
+
+const authSubmit = $('authSubmit');
+const authMessage = $('authMessage');
+
+const planPill = $('planPill');
+const planText = $('planText');
+
+const adminMiniBtn = $('adminMiniBtn');
+const adminNavTab = $('adminNavTab');
+
+const navButtons = document.querySelectorAll('.nav-btn');
+
+const studioView = $('studioView');
+const historyView = $('historyView');
+const profileView = $('profileView');
+const adminView = $('adminView');
+
+const uploadPanel = $('uploadPanel');
+const chooseBtn = $('chooseBtn');
+const fileInput = $('fileInput');
+
+const previewArea = $('previewArea');
+const originalPreview = $('originalPreview');
+const resultPreview = $('resultPreview');
+
+const removeBtn = $('removeBtn');
+const changeBtn = $('changeBtn');
+const downloadBtn = $('downloadBtn');
+const loadingPanel = $('loadingPanel');
+
+const historyContent = $('historyContent');
+const historyRefresh = $('historyRefresh');
+
+const statTotal = $('statTotal');
+const statToday = $('statToday');
+
+const avatarEl = $('avatarEl');
+const profileUsername = $('profileUsername');
+const profileEmail = $('profileEmail');
+const profileRole = $('profileRole');
+const profileJoined = $('profileJoined');
+const profilePlan = $('profilePlan');
+const profileStatus = $('profileStatus');
+
+const statTotalOps = $('statTotalOps');
+const statTodayOps = $('statTodayOps');
+const statRemaining = $('statRemaining');
+
+const profileRefresh = $('profileRefresh');
+const logoutBtn = $('logoutBtn');
+
+const adminRefresh = $('adminRefresh');
+const adminBack = $('adminBack');
+
+const adminUserCount = $('adminUserCount');
+const adminOpsCount = $('adminOpsCount');
+const adminTodayOps = $('adminTodayOps');
+const adminActiveUsers = $('adminActiveUsers');
+
+const adminSearch = $('adminSearch');
+const adminUsersList = $('adminUsersList');
+const adminUsersLabel = $('adminUsersLabel');
+const adminOpsList = $('adminOpsList');
+
+const adminModal = $('adminModal');
+const adminModalClose = $('adminModalClose');
+const adminModalContent = $('adminModalContent');
+
+const toast = $('toast');
+
+function showToast(message,type=''){
+  toast.className = 'toast show ' + type;
+  toast.textContent = message;
+
+  clearTimeout(showToast.timer);
+
+  showToast.timer = setTimeout(() => {
+    toast.classList.remove('show');
+  },4000);
+}
+
+function showAuthMessage(message,type=''){
+  authMessage.className = 'auth-message show ' + type;
+  authMessage.textContent = message;
+}
+
+function hideAuthMessage(){
+  authMessage.className = 'auth-message';
+  authMessage.textContent = '';
+}
+
+function setError(input,error,message){
+  input.classList.toggle('error',!!message);
+  error.textContent = message || '';
+  error.classList.toggle('show',!!message);
+}
+
+function clearErrors(){
+  setError(usernameInput,usernameError,'');
+  setError(emailInput,emailError,'');
+  setError(passwordInput,passwordError,'');
+  setError(confirmInput,confirmError,'');
+}
+
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g,character => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[character]));
+}
+
+function formatDate(value){
+  if(!value) return '—';
+
+  try{
+    const d = new Date(value);
+
+    return d.toLocaleDateString('ar-EG',{
+      year:'numeric',
+      month:'short',
+      day:'numeric'
+    }) + ' · ' +
+    d.toLocaleTimeString('ar-EG',{
+      hour:'2-digit',
+      minute:'2-digit'
+    });
+  }catch{
+    return String(value);
+  }
+}
+
+function startOfTodayISO(){
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  return d.toISOString();
+}
+
+function getInitials(value){
+  const text = String(value || '?').trim();
+
+  if(!text) return '?';
+
+  return text
+    .split(/\s+/)
+    .slice(0,2)
+    .map(x => x[0])
+    .join('')
+    .toUpperCase();
+}
+
+function isDeveloper(){
+  return currentProfile?.role === 'developer';
+}
+
+function isPro(){
+  return currentProfile?.plan === 'pro';
+}
+
+function saveSession(session){
+  currentSession = session;
+
+  if(session){
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify(session)
+    );
+  }else{
+    localStorage.removeItem(SESSION_KEY);
+  }
+}
+
+function getSavedSession(){
+  try{
+    const raw = localStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch{
+    localStorage.removeItem(SESSION_KEY);
+    return null;
+  }
+}
+
+async function supabaseRequest(path,options={},token=null){
+  const headers = {
+    apikey:SUPABASE_KEY,
+    'Content-Type':'application/json',
+    ...(options.headers || {})
+  };
+
+  if(token){
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  let response;
+
+  try{
+    response = await fetch(
+      `${SUPABASE_URL}${path}`,
+      {
+        ...options,
+        headers
+      }
+    );
+  }catch{
+    const error = new Error('فشل الاتصال بالسيرفر.');
+    error.status = 0;
+    throw error;
+  }
+
+  const text = await response.text();
+
+  let data = null;
+
+  try{
+    data = text ? JSON.parse(text) : null;
+  }catch{
+    data = text;
+  }
+
+  if(!response.ok){
+    const message =
+      data?.message ||
+      data?.msg ||
+      data?.error_description ||
+      data?.error ||
+      data?.hint ||
+      `خطأ HTTP ${response.status}`;
+
+    const error = new Error(message);
+
+    error.status = response.status;
+    error.data = data;
+
+    throw error;
+  }
+
+  return data;
+}
+
+async function refreshSession(session){
+  if(!session?.refresh_token){
+    return null;
+  }
+
+  try{
+    const data = await supabaseRequest(
+      '/auth/v1/token?grant_type=refresh_token',
+      {
+        method:'POST',
+        body:JSON.stringify({
+          refresh_token:session.refresh_token
+        })
+      }
+    );
+
+    const nextSession = {
+      access_token:data.access_token,
+      refresh_token:data.refresh_token,
+      expires_in:data.expires_in,
+      expires_at:Date.now() + ((data.expires_in || 3600) * 1000),
+      user:data.user || session.user || null
+    };
+
+    saveSession(nextSession);
+
+    return nextSession;
+  }catch{
+    saveSession(null);
+    return null;
+  }
+}
+
+async function getValidSession(){
+  const saved = currentSession || getSavedSession();
+
+  if(!saved){
+    return null;
+  }
+
+  const expiresAt = saved.expires_at || 0;
+
+  if(
+    expiresAt &&
+    Date.now() < expiresAt - 60000
+  ){
+    currentSession = saved;
+    return saved;
+  }
+
+  return await refreshSession(saved);
+}
+
+async function getUser(session){
+  if(!session?.access_token){
+    return null;
+  }
+
+  try{
+    return await supabaseRequest(
+      '/auth/v1/user',
+      {method:'GET'},
+      session.access_token
+    );
+  }catch{
+    return null;
+  }
+}
+
+async function login(email,password){
+  const data = await supabaseRequest(
+    '/auth/v1/token?grant_type=password',
+    {
+      method:'POST',
+      body:JSON.stringify({
+        email,
+        password
+      })
+    }
+  );
+
+  const session = {
+    access_token:data.access_token,
+    refresh_token:data.refresh_token,
+    expires_in:data.expires_in,
+    expires_at:Date.now() + ((data.expires_in || 3600) * 1000),
+    user:data.user || null
+  };
+
+  saveSession(session);
+
+  return session;
+}
+
+async function signup(email,password,username){
+  const data = await supabaseRequest(
+    '/auth/v1/signup',
+    {
+      method:'POST',
+      body:JSON.stringify({
+        email,
+        password,
+        data:{
+          username
+        }
+      })
+    }
+  );
+
+  if(!data?.access_token){
+    return {
+      needsConfirmation:true,
+      user:data?.user || null
+    };
+  }
+
+  const session = {
+    access_token:data.access_token,
+    refresh_token:data.refresh_token,
+    expires_in:data.expires_in,
+    expires_at:Date.now() + ((data.expires_in || 3600) * 1000),
+    user:data.user || null
+  };
+
+  saveSession(session);
+
+  return session;
+}
+
+async function getProfile(userId,token){
+  try{
+    const data = await supabaseRequest(
+      `/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}&select=*`,
+      {method:'GET'},
+      token
+    );
+
+    return Array.isArray(data) ? data[0] || null : null;
+  }catch{
+    return null;
+  }
+}
+
+async function fetchOperations(token,userId){
+  const data = await supabaseRequest(
+    `/rest/v1/operations?user_id=eq.${encodeURIComponent(userId)}&deleted_at=is.null&select=*&order=created_at.desc&limit=100`,
+    {method:'GET'},
+    token
+  );
+
+  return Array.isArray(data) ? data : [];
+}
+
+async function countTodayOperations(token,userId){
+  const since = startOfTodayISO();
+
+  const data = await supabaseRequest(
+    `/rest/v1/operations?user_id=eq.${encodeURIComponent(userId)}&created_at=gte.${encodeURIComponent(since)}&select=id`,
+    {method:'GET'},
+    token
+  );
+
+  return Array.isArray(data) ? data.length : 0;
+}
+
+async function saveOperation(token,originalPath,resultPath){
+  const data = await supabaseRequest(
+    '/rest/v1/rpc/create_removebg_operation',
+    {
+      method:'POST',
+      body:JSON.stringify({
+        p_original_path:originalPath,
+        p_result_path:resultPath
+      })
+    },
+    token
+  );
+
+  if(Array.isArray(data)){
+    return data[0] || null;
+  }
+
+  return data;
+}
+
+async function deleteOperation(token,operationId){
+  return await supabaseRequest(
+    '/rest/v1/rpc/soft_delete_operation',
+    {
+      method:'POST',
+      body:JSON.stringify({
+        p_operation_id:operationId
+      })
+    },
+    token
+  );
+}
+
+function extractStoragePath(value){
+  if(!value){
+    return null;
+  }
+
+  const text = String(value);
+
+  if(text.includes(`/storage/v1/object/public/${BUCKET}/`)){
+    return text
+      .split(`/storage/v1/object/public/${BUCKET}/`)[1]
+      ?.split('?')[0] || null;
+  }
+
+  if(text.includes(`/storage/v1/object/${BUCKET}/`)){
+    return text
+      .split(`/storage/v1/object/${BUCKET}/`)[1]
+      ?.split('?')[0] || null;
+  }
+
+  if(text.startsWith(`${BUCKET}/`)){
+    return text.slice(BUCKET.length + 1);
+  }
+
+  if(
+    text.startsWith('http://') ||
+    text.startsWith('https://')
+  ){
+    return null;
+  }
+
+  return text.replace(/^\/+/,'').split('?')[0];
+}
+
+async function createSignedUrl(token,path,expiresIn=SIGNED_URL_SECONDS){
+  if(!path){
+    return null;
+  }
+
+  const cleanPath = String(path)
+    .replace(/^\/+/,'')
+    .split('?')[0];
+
+  const encoded = cleanPath
+    .split('/')
+    .map(encodeURIComponent)
+    .join('/');
+
+  try{
+    const data = await supabaseRequest(
+      `/storage/v1/object/sign/${BUCKET}/${encoded}`,
+      {
+        method:'POST',
+        body:JSON.stringify({
+          expiresIn
+        })
+      },
+      token
+    );
+
+    const signed =
+      data?.signedURL ||
+      data?.signedUrl ||
+      data?.url ||
+      data?.signed_url;
+
+    if(!signed){
+      return null;
+    }
+
+    return (
+      String(signed).startsWith('http://') ||
+      String(signed).startsWith('https://')
+    )
+      ? signed
+      : `${SUPABASE_URL}${signed}`;
+  }catch{
+    return null;
+  }
+}
+
+function publicStorageUrl(path){
+  if(!path){
+    return null;
+  }
+
+  const cleanPath = String(path)
+    .replace(/^\/+/,'')
+    .split('?')[0];
+
+  const encoded = cleanPath
+    .split('/')
+    .map(encodeURIComponent)
+    .join('/');
+
+  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${encoded}`;
+}
+
+async function resolveImageUrl(value,token){
+  if(!value){
+    return null;
+  }
+
+  const path = extractStoragePath(value);
+
+  if(!path){
+    return value;
+  }
+
+  const signed = await createSignedUrl(
+    token,
+    path
+  );
+
+  return signed || publicStorageUrl(path);
+}
+
+async function uploadToStorage(token,userId,blob,folder){
+  const filename =
+    `${userId}/${folder}-${Date.now()}-${Math.random().toString(36).slice(2,9)}.png`;
+
+  const response = await fetch(
+    `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filename}`,
+    {
+      method:'POST',
+      headers:{
+        Authorization:`Bearer ${token}`,
+        apikey:SUPABASE_KEY,
+        'Content-Type':'image/png',
+        'x-upsert':'false',
+        'cache-control':'3600'
+      },
+      body:blob
+    }
+  );
+
+  if(!response.ok){
+    const text = await response.text().catch(() => '');
+
+    throw new Error(
+      `فشل رفع الصورة (${response.status}) ${text}`
+    );
+  }
+
+  return filename;
+}
+
+async function removeStorageFiles(token,paths){
+  const cleanPaths = paths
+    .map(extractStoragePath)
+    .filter(Boolean);
+
+  if(!cleanPaths.length){
+    return;
+  }
+
+  try{
+    await supabaseRequest(
+      `/storage/v1/object/${BUCKET}`,
+      {
+        method:'DELETE',
+        body:JSON.stringify({
+          prefixes:cleanPaths
+        })
+      },
+      token
+    );
+  }catch{}
+}
+
+function showImageFromOperation(imageElement,value,token){
+  return resolveImageUrl(value,token).then(url => {
+    if(url){
+      imageElement.src = url;
+    }
+  });
+}
+
+function updateAdminVisibility(){
+  const developer = isDeveloper();
+
+  adminMiniBtn.classList.toggle(
+    'hidden',
+    !developer
+  );
+
+  adminNavTab.classList.toggle(
+    'hidden',
+    !developer
+  );
+}
+
+function updatePlanUI(){
+  const pro = isPro();
+
+  planPill.classList.toggle('pro',pro);
+
+  planText.textContent =
+    pro
+      ? 'Pro • بلا حدود'
+      : 'Free • 5 اليوم';
+
+  profilePlan.textContent =
+    pro
+      ? 'Pro — بلا حدود'
+      : currentProfile?.plan === 'custom'
+        ? `Custom — ${currentProfile.daily_limit}`
+        : 'Free — 5 اليوم';
+}
+
+function setAuthMode(mode){
+  authMode = mode;
+
+  clearErrors();
+  hideAuthMessage();
+
+  const register = mode === 'register';
+
+  loginTab.classList.toggle('active',!register);
+  registerTab.classList.toggle('active',register);
+
+  usernameField.classList.toggle('hidden',!register);
+  confirmField.classList.toggle('hidden',!register);
+
+  authSubmit.textContent =
+    register
+      ? 'إنشاء الحساب'
+      : 'تسجيل الدخول';
+
+  passwordInput.setAttribute(
+    'autocomplete',
+    register
+      ? 'new-password'
+      : 'current-password'
+  );
+}
+
+function showAuth(){
+  authScreen.classList.remove('hidden');
+  appScreen.classList.add('hidden');
+}
+
+function showApp(){
+  authScreen.classList.add('hidden');
+  appScreen.classList.remove('hidden');
+}
+
+function switchView(name){
+  if(
+    name === 'admin' &&
+    !isDeveloper()
+  ){
+    showToast(
+      'لا تملك صلاحية لوحة المطوّر',
+      'error'
+    );
+    return;
+  }
+
+  navButtons.forEach(button => {
+    button.classList.toggle(
+      'active',
+      button.dataset.view === name
+    );
+  });
+
+  studioView.classList.toggle(
+    'hidden',
+    name !== 'studio'
+  );
+
+  historyView.classList.toggle(
+    'hidden',
+    name !== 'history'
+  );
+
+  profileView.classList.toggle(
+    'hidden',
+    name !== 'profile'
+  );
+
+  adminView.classList.toggle(
+    'hidden',
+    name !== 'admin'
+  );
+
+  if(name === 'history'){
+    refreshHistory();
+  }
+
+  if(name === 'profile'){
+    refreshProfileView();
+  }
+
+  if(name === 'admin'){
+    refreshAdminDashboard();
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+}
+
+navButtons.forEach(button => {
+  button.addEventListener(
+    'click',
+    () => switchView(button.dataset.view)
+  );
+});
+
+adminMiniBtn.addEventListener(
+  'click',
+  () => switchView('admin')
+);
+
+adminBack.addEventListener(
+  'click',
+  () => switchView('studio')
+);
+
+async function updateUsageUI(){
+  if(!currentSession?.user){
+    return;
+  }
+
+  try{
+    const today =
+      await countTodayOperations(
+        currentSession.access_token,
+        currentSession.user.id
+      );
+
+    if(isPro()){
+      statRemaining.textContent = '∞';
+      return;
+    }
+
+    const limit =
+      Number(
+        currentProfile?.daily_limit ??
+        DEFAULT_DAILY_LIMIT
+      );
+
+    statRemaining.textContent =
+      Math.max(0,limit - today);
+  }catch{}
+}
+
+async function refreshHistory(){
+  if(!currentSession?.user){
+    return;
+  }
+
+  historyContent.innerHTML = `
+    <div class="empty">
+      <div class="empty-icon">⌛</div>
+      <h3>جاري تحميل السجل...</h3>
+      <p>يتم تجهيز عمليات حسابك</p>
+    </div>
+  `;
+
+  try{
+    const token = currentSession.access_token;
+    const userId = currentSession.user.id;
+
+    const operations =
+      await fetchOperations(
+        token,
+        userId
+      );
+
+    operationsCache = operations;
+
+    const today =
+      await countTodayOperations(
+        token,
+        userId
+      );
+
+    statTotal.textContent =
+      operations.length;
+
+    statToday.textContent =
+      today;
+
+    if(!operations.length){
+      historyContent.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">◌</div>
+          <h3>لا توجد عمليات بعد</h3>
+          <p>ابدأ من الاستوديو وستظهر نتائجك هنا</p>
+        </div>
+      `;
+      return;
+    }
+
+    const grid =
+      document.createElement('div');
+
+    grid.className =
+      'history-grid';
+
+    for(const operation of operations){
+      const card =
+        document.createElement('div');
+
+      card.className =
+        'history-card';
+
+      card.innerHTML = `
+        <div class="history-date">
+          ${escapeHtml(formatDate(operation.created_at))}
+        </div>
+
+        <div class="history-thumb">
+          <img loading="lazy" alt="">
+        </div>
+
+        <div class="history-actions">
+          <button
+            class="btn green"
+            type="button"
+            data-action="download"
+            data-id="${escapeHtml(operation.id)}"
+          >
+            ⬇ تحميل
+          </button>
+
+          <button
+            class="btn red"
+            type="button"
+            data-action="delete"
+            data-id="${escapeHtml(operation.id)}"
+          >
+            🗑 حذف
+          </button>
+        </div>
+      `;
+
+      const image =
+        card.querySelector('img');
+
+      grid.appendChild(card);
+
+      showImageFromOperation(
+        image,
+        operation.result_url,
+        token
+      ).catch(() => {});
+    }
+
+    historyContent.innerHTML = '';
+    historyContent.appendChild(grid);
+
+    grid.addEventListener(
+      'click',
+      async event => {
+        const button =
+          event.target.closest(
+            '[data-action]'
+          );
+
+        if(!button){
+          return;
+        }
+
+        const id =
+          button.dataset.id;
+
+        const operation =
+          operationsCache.find(
+            item => String(item.id) === String(id)
+          );
+
+        if(!operation){
+          return;
+        }
+
+        if(
+          button.dataset.action === 'download'
+        ){
+          button.disabled = true;
+
+          try{
+            const url =
+              await resolveImageUrl(
+                operation.result_url,
+                token
+              );
+
+            if(!url){
+              throw new Error(
+                'تعذر تجهيز الصورة'
+              );
+            }
+
+            await downloadImageFromUrl(
+              url,
+              `removebg-${String(operation.id).slice(0,8)}.png`
+            );
+
+          }catch(error){
+            showToast(
+              error.message || 'تعذر التحميل',
+              'error'
+            );
+          }finally{
+            button.disabled = false;
+          }
+
+          return;
+        }
+
+        if(
+          button.dataset.action === 'delete'
+        ){
+          const confirmed =
+            window.confirm(
+              'هل تريد حذف هذه العملية من السجل؟'
+            );
+
+          if(!confirmed){
+            return;
+          }
+
+          button.disabled = true;
+          button.textContent = '...';
+
+          try{
+            await deleteOperation(
+              token,
+              operation.id
+            );
+
+            await removeStorageFiles(
+              token,
+              [
+                operation.original_url,
+                operation.result_url
+              ]
+            );
+
+            showToast(
+              'تم حذف العملية من السجل ✅',
+              'success'
+            );
+
+            await refreshHistory();
+
+          }catch(error){
+            showToast(
+              error.message || 'فشل الحذف',
+              'error'
+            );
+
+            button.disabled = false;
+            button.textContent = '🗑 حذف';
+          }
+        }
+      }
+    );
+
+  }catch(error){
+    historyContent.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">!</div>
+        <h3>تعذر تحميل السجل</h3>
+        <p>${escapeHtml(error.message || 'حدث خطأ')}</p>
+      </div>
+    `;
+  }
+}
+
+async function refreshProfileView(){
+  if(!currentSession?.user){
+    return;
+  }
+
+  const token =
+    currentSession.access_token;
+
+  const userId =
+    currentSession.user.id;
+
+  try{
+    if(!currentProfile){
+      currentProfile =
+        await getProfile(
+          userId,
+          token
+        );
+    }
+
+    const operations =
+      await fetchOperations(
+        token,
+        userId
+      );
+
+    const today =
+      await countTodayOperations(
+        token,
+        userId
+      );
+
+    const username =
+      currentProfile?.username ||
+      currentSession.user.user_metadata?.username ||
+      currentSession.user.email?.split('@')[0] ||
+      '?';
+
+    const email =
+      currentProfile?.email ||
+      currentSession.user.email ||
+      '—';
+
+    avatarEl.textContent =
+      getInitials(username);
+
+    profileUsername.textContent =
+      username;
+
+    profileEmail.textContent =
+      email;
+
+    profileRole.textContent =
+      isDeveloper()
+        ? '✦ المطوّر'
+        : '● مستخدم';
+
+    profileRole.classList.toggle(
+      'dev',
+      isDeveloper()
+    );
+
+    profileJoined.textContent =
+      currentProfile?.created_at
+        ? `انضم في ${formatDate(currentProfile.created_at)}`
+        : '';
+
+    statTotalOps.textContent =
+      operations.length;
+
+    statTodayOps.textContent =
+      today;
+
+    updatePlanUI();
+
+    if(isPro()){
+      statRemaining.textContent = '∞';
+    }else{
+      const limit =
+        Number(
+          currentProfile?.daily_limit ??
+          DEFAULT_DAILY_LIMIT
+        );
+
+      statRemaining.textContent =
+        Math.max(0,limit - today);
+    }
+
+    profileStatus.textContent =
+      currentProfile?.is_banned
+        ? 'الحساب موقوف'
+        : 'الحساب مفعل';
+
+  }catch(error){
+    showToast(
+      error.message || 'تعذر تحديث الحساب',
+      'error'
+    );
+  }
+}
+
+function resetResult(){
+  if(resultUrl){
+    URL.revokeObjectURL(resultUrl);
+    resultUrl = null;
+  }
+
+  resultPreview.src = '';
+  resultPreview.classList.add('hidden');
+
+  downloadBtn.classList.add('hidden');
+  downloadBtn.dataset.url = '';
+}
+
+function setSelectedFile(file){
+  selectedFile = file;
+
+  if(
+    originalPreview.src &&
+    originalPreview.src.startsWith('blob:')
+  ){
+    URL.revokeObjectURL(
+      originalPreview.src
+    );
+  }
+
+  originalPreview.src =
+    URL.createObjectURL(file);
+
+  resetResult();
+
+  previewArea.classList.remove('hidden');
+  uploadPanel.classList.add('hidden');
+  loadingPanel.classList.add('hidden');
+
+  removeBtn.disabled = false;
+  changeBtn.disabled = false;
+}
+
+async function validateImageFile(file){
+  if(!file){
+    return {
+      valid:false,
+      message:'اختر صورة أولًا'
+    };
+  }
+
+  const allowed = [
+    'image/png',
+    'image/jpeg',
+    'image/webp'
+  ];
+
+  if(!allowed.includes(file.type)){
+    return {
+      valid:false,
+      message:'صيغة الصورة غير مدعومة'
+    };
+  }
+
+  if(file.size > 20 * 1024 * 1024){
+    return {
+      valid:false,
+      message:'حجم الصورة أكبر من 20 ميجا'
+    };
+  }
+
+  try{
+    const bytes =
+      new Uint8Array(
+        await file.slice(0,16).arrayBuffer()
+      );
+
+    const png =
+      bytes[0] === 0x89 &&
+      bytes[1] === 0x50 &&
+      bytes[2] === 0x4E &&
+      bytes[3] === 0x47;
+
+    const jpg =
+      bytes[0] === 0xFF &&
+      bytes[1] === 0xD8 &&
+      bytes[2] === 0xFF;
+
+    const webp =
+      bytes[0] === 0x52 &&
+      bytes[1] === 0x49 &&
+      bytes[2] === 0x46 &&
+      bytes[3] === 0x46 &&
+      bytes[8] === 0x57 &&
+      bytes[9] === 0x45 &&
+      bytes[10] === 0x42 &&
+      bytes[11] === 0x50;
+
+    if(!png && !jpg && !webp){
+      return {
+        valid:false,
+        message:'الملف لا يبدو كصورة صالحة'
+      };
+    }
+
+  }catch{}
+
+  return {
+    valid:true
+  };
+}
+
+async function handleFile(file){
+  const result =
+    await validateImageFile(file);
+
+  if(!result.valid){
+    showToast(
+      result.message,
+      'error'
+    );
+
+    return;
+  }
+
+  setSelectedFile(file);
+}
+
+function showProcessing(){
+  loadingPanel.classList.remove(
+    'hidden'
+  );
+
+  removeBtn.disabled = true;
+  changeBtn.disabled = true;
+  downloadBtn.classList.add('hidden');
+}
+
+function hideProcessing(){
+  loadingPanel.classList.add(
+    'hidden'
+  );
+
+  removeBtn.disabled = false;
+  changeBtn.disabled = false;
+}
+
+chooseBtn.addEventListener(
+  'click',
+  event => {
+    event.stopPropagation();
+    fileInput.click();
+  }
+);
+
+uploadPanel.addEventListener(
+  'click',
+  () => fileInput.click()
+);
+
+changeBtn.addEventListener(
+  'click',
+  () => fileInput.click()
+);
+
+fileInput.addEventListener(
+  'change',
+  () => {
+    const file =
+      fileInput.files?.[0];
+
+    fileInput.value = '';
+
+    if(file){
+      handleFile(file);
+    }
+  }
+);
+
+['dragenter','dragover'].forEach(name => {
+  uploadPanel.addEventListener(
+    name,
+    event => {
+      event.preventDefault();
+      uploadPanel.classList.add('drag');
+    }
+  );
+});
+
+['dragleave','drop'].forEach(name => {
+  uploadPanel.addEventListener(
+    name,
+    event => {
+      event.preventDefault();
+      uploadPanel.classList.remove('drag');
+    }
+  );
+});
+
+uploadPanel.addEventListener(
+  'drop',
+  event => {
+    const file =
+      event.dataTransfer?.files?.[0];
+
+    if(file){
+      handleFile(file);
+    }
+  }
+);
+
+function findImageSource(data){
+  const candidates = [
+    data?.url,
+    data?.image,
+    data?.output,
+    data?.result,
+    data?.image_url,
+    data?.imageUrl,
+    data?.output_url,
+    data?.outputUrl,
+    data?.download_url,
+    data?.downloadUrl,
+    data?.data?.url,
+    data?.data?.image,
+    data?.data?.output,
+    data?.data?.result,
+    data?.data?.image_url,
+    data?.data?.imageUrl,
+    data?.data?.output_url,
+    data?.data?.outputUrl,
+    data?.data?.download_url,
+    data?.data?.downloadUrl
+  ];
+
+  for(const value of candidates){
+    if(
+      typeof value === 'string' &&
+      value.trim()
+    ){
+      return value;
+    }
+  }
+
+  return null;
+}
+
+removeBtn.addEventListener(
+  'click',
+  async () => {
+
+    if(!selectedFile){
+      showToast(
+        'اختر صورة أولًا',
+        'error'
+      );
+      return;
+    }
+
+    const session =
+      await getValidSession();
+
+    if(
+      !session?.access_token ||
+      !session?.user?.id
+    ){
+      showToast(
+        'انتهت الجلسة، سجل الدخول مرة أخرى',
+        'error'
+      );
+
+      showAuth();
+      return;
+    }
+
+    currentSession =
+      session;
+
+    currentProfile =
+      currentProfile ||
+      await getProfile(
+        session.user.id,
+        session.access_token
+      );
+
+    if(currentProfile?.is_banned){
+      showToast(
+        'هذا الحساب موقوف',
+        'error'
+      );
+      return;
+    }
+
+    let today;
+
+    try{
+      today =
+        await countTodayOperations(
+          session.access_token,
+          session.user.id
+        );
+    }catch{
+      today = 0;
+    }
+
+    if(!isPro()){
+      const limit =
+        Number(
+          currentProfile?.daily_limit ??
+          DEFAULT_DAILY_LIMIT
+        );
+
+      if(limit > 0 && today >= limit){
+        showToast(
+          `وصلت إلى الحد اليومي (${limit})`,
+          'error'
+        );
+        return;
+      }
+    }
+
+    showProcessing();
+    resetResult();
+
+    try{
+      const originalPath =
+        await uploadToStorage(
+          session.access_token,
+          session.user.id,
+          selectedFile,
+          'orig'
+        );
+
+      const formData =
+        new FormData();
+
+      formData.append('format','png');
+      formData.append('model','v1');
+
+      formData.append(
+        'image',
+        selectedFile,
+        selectedFile.name || 'image.png'
+      );
+
+      const response =
+        await fetch(
+          PIXELCUT_API,
+          {
+            method:'POST',
+            headers:{
+              Accept:'application/json,text/plain,*/*',
+              'x-locale':'en',
+              'x-client-version':'web:pixa.com:4a5b0af2'
+            },
+            body:formData
+          }
+        );
+
+      if(!response.ok){
+        let errorData = null;
+
+        try{
+          errorData =
+            await response.json();
+        }catch{}
+
+        throw new Error(
+          errorData?.message ||
+          errorData?.error ||
+          `فشل الطلب (${response.status})`
+        );
+      }
+
+      const type =
+        response.headers.get('content-type') || '';
+
+      let resultBlob = null;
+
+      if(type.includes('image/')){
+        resultBlob =
+          await response.blob();
+      }else{
+        const data =
+          await response.json();
+
+        const externalUrl =
+          findImageSource(data);
+
+        if(externalUrl){
+          const resultResponse =
+            await fetch(externalUrl);
+
+          if(!resultResponse.ok){
+            throw new Error(
+              'تعذر تحميل صورة النتيجة'
+            );
+          }
+
+          resultBlob =
+            await resultResponse.blob();
+        }
+      }
+
+      if(!resultBlob){
+        throw new Error(
+          'لم يتم العثور على صورة النتيجة'
+        );
+      }
+
+      const resultPath =
+        await uploadToStorage(
+          session.access_token,
+          session.user.id,
+          resultBlob,
+          'res'
+        );
+
+      await saveOperation(
+        session.access_token,
+        originalPath,
+        resultPath
+      );
+
+      resultUrl =
+        URL.createObjectURL(
+          resultBlob
+        );
+
+      resultPreview.src =
+        resultUrl;
+
+      resultPreview.classList.remove(
+        'hidden'
+      );
+
+      const permanentUrl =
+        await resolveImageUrl(
+          resultPath,
+          session.access_token
+        );
+
+      downloadBtn.dataset.url =
+        permanentUrl || '';
+
+      downloadBtn.classList.remove(
+        'hidden'
+      );
+
+      showToast(
+        'تمت إزالة الخلفية بنجاح ✅',
+        'success'
+      );
+
+      await updateUsageUI();
+
+    }catch(error){
+      console.error(
+        '[RemoveBG]',
+        error
+      );
+
+      const message =
+        String(
+          error?.message || ''
+        );
+
+      if(
+        message.includes(
+          'DAILY_LIMIT_REACHED'
+        )
+      ){
+        showToast(
+          'وصلت إلى الحد اليومي',
+          'error'
+        );
+      }else if(
+        message.includes(
+          'ACCOUNT_BANNED'
+        )
+      ){
+        showToast(
+          'هذا الحساب موقوف',
+          'error'
+        );
+      }else{
+        showToast(
+          message ||
+          'حدث خطأ أثناء إزالة الخلفية',
+          'error'
+        );
+      }
+
+    }finally{
+      hideProcessing();
+    }
+  }
+);
+
+async function downloadImageFromUrl(
+  url,
+  filename
+){
+  try{
+    const response =
+      await fetch(
+        url,
+        {mode:'cors'}
+      );
+
+    if(!response.ok){
+      throw new Error(
+        'فشل تحميل الصورة'
+      );
+    }
+
+    const blob =
+      await response.blob();
+
+    const blobUrl =
+      URL.createObjectURL(blob);
+
+    const anchor =
+      document.createElement('a');
+
+    anchor.href = blobUrl;
+    anchor.download = filename;
+
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+
+    setTimeout(
+      () => URL.revokeObjectURL(blobUrl),
+      2500
+    );
+
+  }catch{
+    const anchor =
+      document.createElement('a');
+
+    anchor.href = url;
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
+
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+  }
+}
+
+downloadBtn.addEventListener(
+  'click',
+  async () => {
+    const url =
+      downloadBtn.dataset.url ||
+      resultPreview.src;
+
+    if(!url){
+      showToast(
+        'لا توجد نتيجة للتحميل',
+        'error'
+      );
+      return;
+    }
+
+    downloadBtn.disabled = true;
+
+    try{
+      await downloadImageFromUrl(
+        url,
+        `removebg-${Date.now()}.png`
+      );
+    }finally{
+      downloadBtn.disabled = false;
+    }
+  }
+);
+
+function togglePassword(input,button){
+  const visible =
+    input.type === 'text';
+
+  input.type =
+    visible
+      ? 'password'
+      : 'text';
+
+  button.textContent =
+    visible
+      ? '◉'
+      : '◎';
+}
+
+passwordToggle.addEventListener(
+  'click',
+  () => togglePassword(
+    passwordInput,
+    passwordToggle
+  )
+);
+
+confirmToggle.addEventListener(
+  'click',
+  () => togglePassword(
+    confirmInput,
+    confirmToggle
+  )
+);
+
+loginTab.addEventListener(
+  'click',
+  () => setAuthMode('login')
+);
+
+registerTab.addEventListener(
+  'click',
+  () => setAuthMode('register')
+);
+
+authForm.addEventListener(
+  'submit',
+  async event => {
+    event.preventDefault();
+
+    clearErrors();
+    hideAuthMessage();
+
+    const email =
+      emailInput.value.trim();
+
+    const password =
+      passwordInput.value;
+
+    let invalid = false;
+
+    if(
+      !email ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ){
+      setError(
+        emailInput,
+        emailError,
+        'أدخل بريدًا إلكترونيًا صحيحًا'
+      );
+
+      invalid = true;
+    }
+
+    if(
+      !password ||
+      password.length < 6
+    ){
+      setError(
+        passwordInput,
+        passwordError,
+        'كلمة المرور يجب أن تكون 6 أحرف على الأقل'
+      );
+
+      invalid = true;
+    }
+
+    let username = '';
+    let confirm = '';
+
+    if(authMode === 'register'){
+      username =
+        usernameInput.value.trim();
+
+      confirm =
+        confirmInput.value;
+
+      if(
+        !/^[a-zA-Z0-9_]{3,20}$/.test(username)
+      ){
+        setError(
+          usernameInput,
+          usernameError,
+          'استخدم أحرفًا وأرقامًا و _ فقط'
+        );
+
+        invalid = true;
+      }
+
+      if(
+        !confirm ||
+        confirm !== password
+      ){
+        setError(
+          confirmInput,
+          confirmError,
+          'كلمتا المرور غير متطابقتين'
+        );
+
+        invalid = true;
+      }
+    }
+
+    if(invalid){
+      return;
+    }
+
+    authSubmit.disabled = true;
+
+    authSubmit.textContent =
+      authMode === 'login'
+        ? 'جاري تسجيل الدخول...'
+        : 'جاري إنشاء الحساب...';
+
+    try{
+      if(authMode === 'login'){
+        const session =
+          await login(
+            email,
+            password
+          );
+
+        let user =
+          session.user;
+
+        if(!user){
+          user =
+            await getUser(session);
+
+          if(user){
+            session.user = user;
+            saveSession(session);
+          }
+        }
+
+        if(!user){
+          throw new Error(
+            'تعذر التحقق من الحساب'
+          );
+        }
+
+        currentSession =
+          session;
+
+        currentProfile =
+          await getProfile(
+            user.id,
+            session.access_token
+          );
+
+        if(currentProfile?.is_banned){
+          await logout(false);
+
+          showAuthMessage(
+            'هذا الحساب موقوف من قبل الإدارة.',
+            'error'
+          );
+
+          return;
+        }
+
+        updateAdminVisibility();
+        updatePlanUI();
+
+        showApp();
+        switchView('studio');
+
+        await updateUsageUI();
+
+        showToast(
+          isDeveloper()
+            ? 'مرحبًا بك في مركز المطوّر ✦'
+            : `أهلًا بك ${currentProfile?.username || ''} ✅`,
+          'success'
+        );
+
+      }else{
+        if(username.length < 3){
+          throw new Error(
+            'اسم المستخدم قصير جدًا'
+          );
+        }
+
+        const result =
+          await signup(
+            email,
+            password,
+            username
+          );
+
+        if(result.needsConfirmation){
+          showAuthMessage(
+            'تم إنشاء الحساب بنجاح.\n\nيرجى تأكيد البريد الإلكتروني من الرسالة التي أرسلها Supabase.',
+            'success'
+          );
+
+          return;
+        }
+
+        if(!result.user){
+          const user =
+            await getUser(result);
+
+          if(user){
+            result.user = user;
+            saveSession(result);
+          }
+        }
+
+        if(!result.user){
+          throw new Error(
+            'تعذر إنشاء الحساب'
+          );
+        }
+
+        currentSession =
+          result;
+
+        currentProfile =
+          await getProfile(
+            result.user.id,
+            result.access_token
+          );
+
+        updateAdminVisibility();
+        updatePlanUI();
+
+        showApp();
+        switchView('studio');
+
+        showToast(
+          `تم إنشاء الحساب، أهلًا ${username} 🎉`,
+          'success'
+        );
+      }
+
+      emailInput.value = '';
+      passwordInput.value = '';
+      usernameInput.value = '';
+      confirmInput.value = '';
+
+    }catch(error){
+      console.error(
+        '[Auth]',
+        error
+      );
+
+      let message =
+        error?.message ||
+        'حدث خطأ أثناء العملية';
+
+      const lower =
+        message.toLowerCase();
+
+      if(
+        lower.includes('invalid login') ||
+        lower.includes('invalid credentials')
+      ){
+        message =
+          'البريد أو كلمة المرور غير صحيحة';
+      }else if(
+        lower.includes('already registered') ||
+        lower.includes('already been registered') ||
+        lower.includes('duplicate')
+      ){
+        message =
+          'البريد أو اسم المستخدم مستخدم بالفعل';
+      }else if(
+        lower.includes('email not confirmed')
+      ){
+        message =
+          'يجب تأكيد البريد الإلكتروني أولًا';
+      }else if(error?.status === 429){
+        message =
+          'محاولات كثيرة، حاول بعد قليل';
+      }else if(error?.status === 0){
+        message =
+          'فشل الاتصال بالإنترنت';
+      }
+
+      showAuthMessage(
+        message,
+        'error'
+      );
+
+    }finally{
+      authSubmit.disabled = false;
+
+      authSubmit.textContent =
+        authMode === 'login'
+          ? 'تسجيل الدخول'
+          : 'إنشاء الحساب';
+    }
+  }
+);
+
+async function logout(showMessage=true){
+  const session =
+    await getValidSession();
+
+  try{
+    if(session?.access_token){
+      await fetch(
+        `${SUPABASE_URL}/auth/v1/logout`,
+        {
+          method:'POST',
+          headers:{
+            apikey:SUPABASE_KEY,
+            Authorization:`Bearer ${session.access_token}`
+          }
+        }
+      );
+    }
+  }catch{}
+
+  saveSession(null);
+
+  currentSession = null;
+  currentProfile = null;
+  selectedFile = null;
+  operationsCache = [];
+
+  resetResult();
+
+  previewArea.classList.add('hidden');
+  uploadPanel.classList.remove('hidden');
+
+  switchView('studio');
+  showAuth();
+
+  if(showMessage){
+    showToast(
+      'تم تسجيل الخروج'
+    );
+  }
+}
+
+logoutBtn.addEventListener(
+  'click',
+  () => logout(true)
+);
+
+profileRefresh.addEventListener(
+  'click',
+  async () => {
+    profileRefresh.disabled = true;
+
+    try{
+      currentProfile = null;
+
+      currentProfile =
+        await getProfile(
+          currentSession.user.id,
+          currentSession.access_token
+        );
+
+      updateAdminVisibility();
+      await refreshProfileView();
+      await updateUsageUI();
+
+      showToast(
+        'تم تحديث بيانات الحساب ✅',
+        'success'
+      );
+    }catch(error){
+      showToast(
+        error.message || 'فشل التحديث',
+        'error'
+      );
+    }finally{
+      profileRefresh.disabled = false;
+    }
+  }
+);
+
+historyRefresh.addEventListener(
+  'click',
+  async () => {
+    historyRefresh.disabled = true;
+    historyRefresh.textContent = '...';
+
+    try{
+      await refreshHistory();
+    }finally{
+      historyRefresh.disabled = false;
+      historyRefresh.textContent = 'تحديث';
+    }
+  }
+);
+
+async function fetchAdminProfiles(){
+  const data =
+    await supabaseRequest(
+      '/rest/v1/rpc/admin_list_profiles',
+      {
+        method:'POST',
+        body:JSON.stringify({
+          p_search:
+            adminSearch.value.trim() || null,
+          p_limit:500
+        })
+      },
+      currentSession.access_token
+    );
+
+  return Array.isArray(data)
+    ? data
+    : [];
+}
+
+async function fetchAdminOperations(userId=null){
+  const data =
+    await supabaseRequest(
+      '/rest/v1/rpc/admin_list_operations',
+      {
+        method:'POST',
+        body:JSON.stringify({
+          p_user_id:userId,
+          p_limit:userId ? 200 : 100
+        })
+      },
+      currentSession.access_token
+    );
+
+  return Array.isArray(data)
+    ? data
+    : [];
+}
+
+async function adminUpdateUser(
+  userId,
+  plan,
+  dailyLimit,
+  banned
+){
+  return await supabaseRequest(
+    '/rest/v1/rpc/admin_update_user',
+    {
+      method:'POST',
+      body:JSON.stringify({
+        p_user_id:userId,
+        p_plan:plan,
+        p_daily_limit:Number(dailyLimit),
+        p_is_banned:!!banned
+      })
+    },
+    currentSession.access_token
+  );
+}
+
+async function refreshAdminDashboard(){
+  if(!isDeveloper()){
+    return;
+  }
+
+  adminUsersList.innerHTML = `
+    <div class="empty">
+      <div class="empty-icon">⌛</div>
+      <h3>جاري تحميل الحسابات...</h3>
+      <p>يتم تجهيز مركز المطوّر</p>
+    </div>
+  `;
+
+  adminOpsList.innerHTML = '';
+
+  try{
+    const [
+      profiles,
+      operations
+    ] = await Promise.all([
+      fetchAdminProfiles(),
+      fetchAdminOperations()
+    ]);
+
+    adminUsersCache =
+      profiles;
+
+    adminOperationsCache =
+      operations;
+
+    const todayStart =
+      new Date();
+
+    todayStart.setHours(
+      0,0,0,0
+    );
+
+    const todayOperations =
+      adminOperationsCache.filter(
+        item =>
+          new Date(item.created_at) >= todayStart
+      );
+
+    const active =
+      new Set(
+        todayOperations.map(
+          item => item.user_id
+        )
+      );
+
+    adminUserCount.textContent =
+      adminUsersCache.length;
+
+    adminOpsCount.textContent =
+      adminOperationsCache.length;
+
+    adminTodayOps.textContent =
+      todayOperations.length;
+
+    adminActiveUsers.textContent =
+      active.size;
+
+    renderAdminUsers();
+    await renderAdminOperations();
+
+  }catch(error){
+    adminUsersList.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">!</div>
+        <h3>تعذر تحميل لوحة المطوّر</h3>
+        <p>${escapeHtml(error.message || 'حدث خطأ')}</p>
+      </div>
+    `;
+
+    adminOpsList.innerHTML = '';
+  }
+}
+
+function renderAdminUsers(){
+  const search =
+    adminSearch.value.trim().toLowerCase();
+
+  const list =
+    adminUsersCache.filter(profile => {
+      if(!search){
+        return true;
+      }
+
+      return [
+        profile.username,
+        profile.email,
+        profile.id
+      ]
+      .join(' ')
+      .toLowerCase()
+      .includes(search);
+    });
+
+  adminUsersLabel.textContent =
+    `${list.length} حساب`;
+
+  adminUsersList.innerHTML = '';
+
+  if(!list.length){
+    adminUsersList.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">⌕</div>
+        <h3>لا توجد نتائج</h3>
+        <p>غيّر عبارة البحث</p>
+      </div>
+    `;
+    return;
+  }
+
+  for(const profile of list){
+    const row =
+      document.createElement('div');
+
+    row.className =
+      'user-row';
+
+    const state =
+      profile.is_banned
+        ? 'موقوف'
+        : profile.plan === 'pro'
+          ? 'Pro'
+          : 'Free';
+
+    const stateClass =
+      profile.is_banned
+        ? 'banned'
+        : profile.plan === 'pro'
+          ? 'pro'
+          : '';
+
+    row.innerHTML = `
+      <div class="user-avatar">
+        ${escapeHtml(
+          getInitials(
+            profile.username ||
+            profile.email ||
+            '?'
+          )
+        )}
+      </div>
+
+      <div class="user-main">
+        <strong>
+          ${escapeHtml(profile.username || 'بدون اسم')}
+        </strong>
+
+        <span>
+          ${escapeHtml(profile.email || profile.id || '—')}
+        </span>
+
+        <div class="user-state ${stateClass}">
+          ${escapeHtml(state)}
+        </div>
+      </div>
+
+      <div class="user-meta">
+        <strong>${escapeHtml(profile.operations_count || 0)}</strong>
+        <small>
+          اليوم ${escapeHtml(profile.today_operations || 0)}
+        </small>
+      </div>
+
+      <button class="manage" type="button">
+        إدارة
+      </button>
+    `;
+
+    row
+      .querySelector('.manage')
+      .addEventListener(
+        'click',
+        () => openAdminUser(profile)
+      );
+
+    adminUsersList.appendChild(row);
+  }
+}
+
+async function renderAdminOperations(){
+  adminOpsList.innerHTML = '';
+
+  if(!adminOperationsCache.length){
+    adminOpsList.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">◌</div>
+        <h3>لا توجد عمليات</h3>
+        <p>ستظهر صور المستخدمين هنا</p>
+      </div>
+    `;
+    return;
+  }
+
+  const profilesMap =
+    new Map(
+      adminUsersCache.map(
+        profile => [
+          String(profile.id),
+          profile
+        ]
+      )
+    );
+
+  for(const operation of adminOperationsCache){
+    const card =
+      document.createElement('div');
+
+    card.className =
+      'admin-op';
+
+    card.innerHTML = `
+      <div class="admin-op-thumb">
+        <img alt="" loading="lazy">
+      </div>
+
+      <div class="admin-op-body">
+        <strong>—</strong>
+        <span>${escapeHtml(formatDate(operation.created_at))}</span>
+      </div>
+    `;
+
+    const profile =
+      profilesMap.get(
+        String(operation.user_id)
+      );
+
+    card.querySelector('strong').textContent =
+      profile?.username ||
+      profile?.email ||
+      'مستخدم';
+
+    adminOpsList.appendChild(card);
+
+    showImageFromOperation(
+      card.querySelector('img'),
+      operation.result_url,
+      currentSession.access_token
+    ).catch(() => {});
+  }
+}
+
+async function openAdminUser(profile){
+  const userOperations =
+    await fetchAdminOperations(
+      profile.id
+    );
+
+  const currentLimit =
+    Number(profile.daily_limit ?? 5);
+
+  adminModalContent.innerHTML = `
+    <div class="user-summary">
+      <div class="summary-avatar">
+        ${escapeHtml(
+          getInitials(
+            profile.username ||
+            profile.email ||
+            '?'
+          )
+        )}
+      </div>
+
+      <div>
+        <div class="summary-name">
+          ${escapeHtml(profile.username || 'بدون اسم')}
+        </div>
+
+        <div class="summary-mail">
+          ${escapeHtml(profile.email || '—')}
+        </div>
+
+        <div class="summary-meta">
+          <div class="summary-pill">
+            ${escapeHtml(profile.plan || 'free')}
+          </div>
+
+          <div class="summary-pill">
+            ${escapeHtml(profile.operations_count || 0)} عملية
+          </div>
+
+          <div class="summary-pill">
+            اليوم ${escapeHtml(profile.today_operations || 0)}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="manage-grid">
+
+      <div class="manage-box">
+        <label for="adminPlanSelect">الخطة</label>
+
+        <select id="adminPlanSelect" class="plan-select">
+          <option value="free" ${profile.plan === 'free' ? 'selected' : ''}>
+            Free
+          </option>
+          <option value="pro" ${profile.plan === 'pro' ? 'selected' : ''}>
+            Pro — بلا حدود
+          </option>
+          <option value="custom" ${profile.plan === 'custom' ? 'selected' : ''}>
+            Custom
+          </option>
+        </select>
+      </div>
+
+      <div class="manage-box">
+        <label for="adminLimitInput">الحد اليومي</label>
+
+        <input
+          id="adminLimitInput"
+          class="limit-input"
+          type="number"
+          min="0"
+          value="${currentLimit}"
+        >
+      </div>
+
+    </div>
+
+    <div class="ban-row">
+      <span>إيقاف الحساب</span>
+
+      <button
+        id="adminBanSwitch"
+        class="switch ${profile.is_banned ? 'active' : ''}"
+        type="button"
+        aria-label="تبديل حالة الحساب"
+      ></button>
+    </div>
+
+    <div class="modal-actions">
+      <button id="adminSaveUser" class="btn main" type="button">
+        حفظ التغييرات
+      </button>
+
+      <button id="adminCloseUser" class="btn" type="button">
+        إغلاق
+      </button>
+    </div>
+
+    <div class="modal-section-title">
+      عمليات
+      <span>المستخدم</span>
+    </div>
+
+    <div id="modalOps" class="modal-ops"></div>
+  `;
+
+  adminModal.classList.add('show');
+
+  const banSwitch =
+    $('adminBanSwitch');
+
+  let banned =
+    !!profile.is_banned;
+
+  banSwitch.addEventListener(
+    'click',
+    () => {
+      banned = !banned;
+
+      banSwitch.classList.toggle(
+        'active',
+        banned
+      );
+    }
+  );
+
+  const planSelect =
+    $('adminPlanSelect');
+
+  const limitInput =
+    $('adminLimitInput');
+
+  planSelect.addEventListener(
+    'change',
+    () => {
+      if(planSelect.value === 'pro'){
+        limitInput.value = 0;
+      }else if(
+        planSelect.value === 'free'
+      ){
+        limitInput.value =
+          currentLimit > 0
+            ? Math.min(currentLimit,5)
+            : 5;
+      }
+    }
+  );
+
+  $('adminCloseUser').addEventListener(
+    'click',
+    closeAdminModal
+  );
+
+  $('adminSaveUser').addEventListener(
+    'click',
+    async event => {
+      const button =
+        event.currentTarget;
+
+      button.disabled = true;
+      button.textContent =
+        'جاري الحفظ...';
+
+      try{
+        let limit =
+          Number(limitInput.value);
+
+        if(
+          !Number.isFinite(limit) ||
+          limit < 0
+        ){
+          throw new Error(
+            'الحد اليومي غير صحيح'
+          );
+        }
+
+        if(
+          planSelect.value === 'free'
+        ){
+          limit = 5;
+        }
+
+        if(
+          planSelect.value === 'pro'
+        ){
+          limit = 0;
+        }
+
+        await adminUpdateUser(
+          profile.id,
+          planSelect.value,
+          limit,
+          banned
+        );
+
+        showToast(
+          'تم تحديث الحساب ✅',
+          'success'
+        );
+
+        await refreshAdminDashboard();
+
+        const fresh =
+          adminUsersCache.find(
+            item => String(item.id) === String(profile.id)
+          );
+
+        if(fresh){
+          await openAdminUser(fresh);
+        }
+
+      }catch(error){
+        showToast(
+          error.message || 'فشل التحديث',
+          'error'
+        );
+      }finally{
+        button.disabled = false;
+        button.textContent =
+          'حفظ التغييرات';
+      }
+    }
+  );
+
+  const modalOps =
+    $('modalOps');
+
+  if(!userOperations.length){
+    modalOps.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">◌</div>
+        <h3>لا توجد عمليات</h3>
+        <p>هذا المستخدم لم ينفذ عمليات بعد</p>
+      </div>
+    `;
+  }else{
+    const recent =
+      userOperations.slice(0,20);
+
+    for(const operation of recent){
+      const card =
+        document.createElement('div');
+
+      card.className =
+        'admin-op';
+
+      card.innerHTML = `
+        <div class="admin-op-thumb">
+          <img alt="" loading="lazy">
+        </div>
+
+        <div class="admin-op-body">
+          <strong>${escapeHtml(formatDate(operation.created_at))}</strong>
+          <span>RemoveBG</span>
+        </div>
+      `;
+
+      modalOps.appendChild(card);
+
+      showImageFromOperation(
+        card.querySelector('img'),
+        operation.result_url,
+        currentSession.access_token
+      ).catch(() => {});
+    }
+  }
+}
+
+function closeAdminModal(){
+  adminModal.classList.remove('show');
+}
+
+adminModalClose.addEventListener(
+  'click',
+  closeAdminModal
+);
+
+adminModal.addEventListener(
+  'click',
+  event => {
+    if(event.target === adminModal){
+      closeAdminModal();
+    }
+  }
+);
+
+adminSearch.addEventListener(
+  'input',
+  () => renderAdminUsers()
+);
+
+adminRefresh.addEventListener(
+  'click',
+  async () => {
+    adminRefresh.disabled = true;
+
+    try{
+      await refreshAdminDashboard();
+
+      showToast(
+        'تم تحديث لوحة المطوّر ✅',
+        'success'
+      );
+    }finally{
+      adminRefresh.disabled = false;
+    }
+  }
+);
+
+async function initialize(){
+  loaderStatus.textContent =
+    'جاري فحص الجلسة...';
+
+  await new Promise(
+    resolve => setTimeout(resolve,850)
+  );
+
+  const session =
+    await getValidSession();
+
+  if(!session){
+    loaderStatus.textContent =
+      'جاري فتح الاستوديو...';
+
+    await new Promise(
+      resolve => setTimeout(resolve,250)
+    );
+
+    loader.classList.add('hide');
+
+    setTimeout(
+      () => loader.remove(),
+      600
+    );
+
+    showAuth();
+
+    return;
+  }
+
+  const user =
+    await getUser(session);
+
+  if(!user){
+    saveSession(null);
+
+    loaderStatus.textContent =
+      'انتهت الجلسة...';
+
+    await new Promise(
+      resolve => setTimeout(resolve,250)
+    );
+
+    loader.classList.add('hide');
+
+    setTimeout(
+      () => loader.remove(),
+      600
+    );
+
+    showAuth();
+
+    return;
+  }
+
+  session.user =
+    user;
+
+  saveSession(session);
+  currentSession =
+    session;
+
+  currentProfile =
+    await getProfile(
+      user.id,
+      session.access_token
+    );
+
+  if(currentProfile?.is_banned){
+    await logout(false);
+
+    loaderStatus.textContent =
+      'الحساب موقوف...';
+
+    await new Promise(
+      resolve => setTimeout(resolve,250)
+    );
+
+    loader.classList.add('hide');
+
+    setTimeout(
+      () => loader.remove(),
+      600
+    );
+
+    showAuth();
+
+    showAuthMessage(
+      'هذا الحساب موقوف من قبل الإدارة.',
+      'error'
+    );
+
+    return;
+  }
+
+  updateAdminVisibility();
+  updatePlanUI();
+
+  loaderStatus.textContent =
+    isDeveloper()
+      ? 'جاري تجهيز مركز المطوّر...'
+      : 'جاري تجهيز الاستوديو...';
+
+  await new Promise(
+    resolve => setTimeout(resolve,350)
+  );
+
+  loader.classList.add('hide');
+
+  setTimeout(
+    () => loader.remove(),
+    600
+  );
+
+  showApp();
+  switchView('studio');
+
+  await updateUsageUI();
+}
+
+initialize();
+</script></body>
+  </html>
