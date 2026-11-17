@@ -1,0 +1,9 @@
+{
+  "name": "apex-drive-offline",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone native WebGL2 3D driving game. No third-party runtime libraries.",
+  "scripts": {
+    "serve": "python3 -m http.server 8080"
+  }
+}

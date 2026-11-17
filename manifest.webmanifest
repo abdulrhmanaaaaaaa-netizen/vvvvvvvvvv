@@ -1,0 +1,12 @@
+{
+  "name": "APEX DRIVE — Offline Racing World",
+  "short_name": "APEX DRIVE",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080c0e",
+  "theme_color": "#090d10",
+  "description": "لعبة قيادة ثلاثية الأبعاد تعمل محليًا بعد التثبيت الأول."
+}
